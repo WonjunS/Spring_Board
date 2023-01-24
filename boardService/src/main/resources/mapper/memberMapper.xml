@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.boardservice.dao.memberMapper">
+  <select id="findAll" resultType="HashMap">
+    select * from user
+  </select>
+
+  <insert id="insertMember" parameterType="Member">
+    INSERT INTO member VALUES (#{id}, #{createdAt}, #{modifiedAt}, #{email}, #{nickname}, #{password}, #{role})
+  </insert>
+
+  <select id="selectOne" parameterType="string" resultType="Member">
+    SELECT * FROM member WHERE email = #{email}
+  </select>
+
+</mapper>
