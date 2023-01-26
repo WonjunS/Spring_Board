@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @Mapper
-public interface memberMapper {
+public interface MemberMapper {
 
     void insertMember(Member member);
 
