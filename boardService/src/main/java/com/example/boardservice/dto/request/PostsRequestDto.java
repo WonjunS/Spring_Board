@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PostsDto {
+public class PostsRequestDto {
 
     private Long id;
     private String title;
@@ -24,8 +24,8 @@ public class PostsDto {
     private int likes;
     private BoardType boardType;
     private Member member;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     // Dto -> Entity
     public Posts toEntity() {
@@ -37,6 +37,7 @@ public class PostsDto {
                 .view(0)
                 .likes(0)
                 .boardType(boardType)
+                .member(member)
                 .build();
 
         return post;
