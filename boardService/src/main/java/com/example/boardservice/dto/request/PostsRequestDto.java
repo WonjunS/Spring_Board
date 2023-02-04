@@ -1,4 +1,4 @@
-package com.example.boardservice.dto;
+package com.example.boardservice.dto.request;
 
 import com.example.boardservice.domain.BoardType;
 import com.example.boardservice.domain.Member;
