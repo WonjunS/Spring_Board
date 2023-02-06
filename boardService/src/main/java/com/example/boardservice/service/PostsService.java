@@ -4,20 +4,21 @@ import com.example.boardservice.domain.BoardType;
 import com.example.boardservice.domain.Member;
 import com.example.boardservice.domain.Posts;
 import com.example.boardservice.dto.request.PostsRequestDto;
+import com.example.boardservice.dto.response.MemberResponseDto;
 import com.example.boardservice.dto.response.PostsResponseDto;
 import com.example.boardservice.repository.MemberRepository;
 import com.example.boardservice.repository.PostsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,8 +40,6 @@ public class PostsService {
 
         postsDto.setBoardType(BoardType.FREE);
         postsDto.setMember(member);
-        postsDto.setCreatedDate(LocalDateTime.now());
-        postsDto.setModifiedDate(LocalDateTime.now());
 
         Posts posts = postsDto.toEntity();
         postsRepository.save(posts);
@@ -52,9 +51,25 @@ public class PostsService {
     @Transactional(readOnly = true)
     public Page<PostsResponseDto> getAllPosts(Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
-        pageable = PageRequest.of(page, 10);
+        pageable = PageRequest.of(page, 10, Sort.by("id").descending());
 
         Page<PostsResponseDto> posts = postsRepository.findAll(pageable).map(PostsResponseDto::new);
+        return posts;
+    }
+
+    // 특정 회원이 작성한 게시물 불러오기
+    @Transactional(readOnly = true)
+    public Page<PostsResponseDto> getAllPostsByWriter(String email, Pageable pageable) {
+        int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
+        pageable = PageRequest.of(page, 10, Sort.by("id").descending());
+
+        Member member = memberRepository.findByEmail(email);
+
+        Page<PostsResponseDto> posts = null;
+        if(member != null) {
+            posts = postsRepository.findAllByMember(member, pageable).map(PostsResponseDto::new);
+        }
+
         return posts;
     }
 
