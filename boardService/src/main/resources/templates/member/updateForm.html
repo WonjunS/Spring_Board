@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainLayout}">
+
+<th:block layout:fragment="css">
+  <style>
+    .id_ok{
+      color:#008000;
+      display: none;
+    }
+
+    .id_already{
+      color:#6A82FB;
+      display: none;
+    }
+  </style>
+</th:block>
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    $(document).ready(function(){
+      var errorMessage = [[${errorMessage}]];
+      if(errorMessage != null){
+        alert(errorMessage);
+      }
+    });
+  </script>
+  <script>
+    // $(function() {
+    //   $("#join").click(function() {
+    //     var nickname = $("#nickname").val();
+    //     var email = $("#email").val();
+    //
+    //     if(nickname === '') {
+    //       alert("닉네임을 입력해주세요.");
+    //       return false;
+    //     }
+    //
+    //     $.ajax({
+    //       url: "/member/update",
+    //       type: "POST",
+    //       data: {"nickname": nickname},
+    //       success: function(data){
+    //         var txt = data.nickname + data.email;
+    //         $('#result').text(txt);
+    //       },
+    //       error: function(){
+    //         alert("stringify err");
+    //       }
+    //     });
+    //   });
+    // });
+  </script>
+</th:block>
+
+<div layout:fragment="content">
+  <h1>회원 가입</h1>
+  <hr>
+  <form method="post" th:action="@{/member/update}">
+    <div class="form-group">
+      <label for="nickname">Nickname</label>
+      <input id="nickname" type="text" name="nickname" class="form-control" th:value="${memberDto.nickname}">
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" type="text" name="email" class="form-control" th:value="${memberDto.email}" readonly>
+    </div>
+    <a th:href="@{'/posts/all/' + ${memberDto.id}}">Test</a>
+    <button id="join" type="submit" class="btn btn-primary">수정하기</button>
+  </form>
+</div>
+</html>
