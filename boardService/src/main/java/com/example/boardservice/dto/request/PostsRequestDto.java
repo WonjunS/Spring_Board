@@ -24,8 +24,8 @@ public class PostsRequestDto {
     private int likes;
     private BoardType boardType;
     private Member member;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
     // Dto -> Entity
     public Posts toEntity() {
