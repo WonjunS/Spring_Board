@@ -125,6 +125,25 @@ public class PostsService {
         return posts;
     }
 
+    // 게시물 수정하기
+    @Transactional
+    public void updatePost(Long id, String boardType, PostsRequestDto postsDto) {
+        Posts post = postsRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("해당 게시글이 존재하지 않습니다. id = " + id));
+
+        if(boardType.equals("자유게시판")) postsDto.setBoardType(BoardType.FREE);
+        if(boardType.equals("공지사항")) postsDto.setBoardType(BoardType.NOTICE);
+        if(boardType.equals("질문게시판")) postsDto.setBoardType(BoardType.QUESTION);
+
+        post.update(postsDto.getTitle(), postsDto.getBoardType(), postsDto.getContent());
+    }
+
+    // 게시물 삭제하기
+    @Transactional
+    public void deletePost(Long id) {
+        postsRepository.deleteById(id);
+    }
+
     // 게시물 조회수 업데이트
     @Transactional
     public int updateView(Long postsId) {
