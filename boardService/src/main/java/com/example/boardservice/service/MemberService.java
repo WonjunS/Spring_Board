@@ -1,69 +1,80 @@
 package com.example.boardservice.service;
 
-import com.example.boardservice.dao.MemberMapper;
 import com.example.boardservice.domain.Member;
 import com.example.boardservice.domain.Role;
-import com.example.boardservice.dto.MemberDto;
+import com.example.boardservice.dto.request.MemberRequestDto;
+import com.example.boardservice.dto.response.MemberResponseDto;
 import com.example.boardservice.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MemberService implements UserDetailsService {
+public class MemberService {
 
     @Autowired
     private MemberRepository memberRepository;
 
+    // 회원 정보 저장
     @Transactional
-    public void save(MemberDto memberDto) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    public void save(MemberRequestDto memberDto) {
+        validateDuplicatedEmail(memberDto.getEmail());
+        validateDuplicatedNickname(memberDto.getNickname());
 
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
         memberDto.setRole(Role.USER);
-        memberDto.setCreatedAt(LocalDateTime.now());
-        memberDto.setModifiedAt(LocalDateTime.now());
 
         memberRepository.save(memberDto.toEntity());
     }
 
-//    public Member save(Member member) {
-//        validateDuplicatedMember(member);
-//        return memberRepository.save(member);
-//    }
-
-    private void validateDuplicatedMember(Member member) {
-        Member findMember = memberRepository.findByEmail(member.getEmail());
+    // 이메일 중복 확인
+    private void validateDuplicatedEmail(String email) {
+        Member findMember = memberRepository.findByEmail(email);
 
         if(findMember != null) {
-            throw new IllegalStateException("Member already exists");
+            throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    // 닉네임 중복 확인
+    private void validateDuplicatedNickname(String nickname) {
+        Member findMember = memberRepository.findByNickname(nickname);
+
+        if(findMember != null) {
+            throw new IllegalStateException("이미 존재하는 닉네임 입니다.");
+        }
+    }
+
+    // 특정 회원 찾기
+    public MemberResponseDto findMember(String email) {
         Member member = memberRepository.findByEmail(email);
-
-        if(member == null) {
-            throw new UsernameNotFoundException("Could not find user");
-        }
-
-        return User.builder()
-                .username(member.getEmail())
-                .password(member.getPassword())
-                .roles(member.getRole().toString())
-                .build();
+        return new MemberResponseDto(member);
     }
 
+    // 전체 회원 리스트 조회
+    public List<MemberResponseDto> findAllMembers() {
+        List<Member> members = memberRepository.findAll();
+        List<MemberResponseDto> memberList = new ArrayList<>();
+
+        for(Member member : members) {
+            MemberResponseDto memberResponseDto = new MemberResponseDto(member);
+            memberList.add(memberResponseDto);
+        }
+
+        return memberList;
+    }
+
+    // 회원 정보 수정
+    public int updateMemberNickname(String email, String nickname) {
+        validateDuplicatedNickname(nickname);
+        Long memberId = memberRepository.findByEmail(email).getId();
+        return memberRepository.updateNickname(memberId, nickname);
+    }
 }

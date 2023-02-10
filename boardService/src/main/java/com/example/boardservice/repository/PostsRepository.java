@@ -1,5 +1,7 @@
 package com.example.boardservice.repository;
 
+import com.example.boardservice.domain.BoardType;
+import com.example.boardservice.domain.Member;
 import com.example.boardservice.domain.Posts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,16 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
     @Query("update Posts p set p.view = p.view + 1 where p.id = :id")
     int updateView(Long id);
 
-    List<Posts> findByWriter(String writer);
+    @Transactional
+    @Modifying
+    @Query("update Posts p set p.likes = p.likes + 1 where p.id = :id")
+    int updateLikes(Long id);
+
+    @Transactional
+    @Query("select p from Posts p where p.boardType = :boardType")
+    Page<Posts> findPostsByBoardType(BoardType boardType, Pageable pageable);
+
+    Page<Posts> findAllByMember(Member member, Pageable pageable);
+    Page<Posts> findByTitleContaining(String keyword, Pageable pageable);
 
 }

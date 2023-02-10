@@ -19,7 +19,7 @@ public class PostsResponseDto {
     private final int likes;
     private final BoardType boardType;
     private final Long memberId;
-    private LocalDateTime createdDate, modifiedDate;
+    private LocalDateTime createdAt, modifiedAt;
     private final List<CommentResponseDto> comments;
 
     // Entity -> Dto
@@ -31,6 +31,8 @@ public class PostsResponseDto {
         this.view = posts.getView();
         this.likes = posts.getLikes();
         this.boardType = posts.getBoardType();
+        this.createdAt = posts.getCreatedAt();
+        this.modifiedAt = posts.getModifiedAt();
         this.memberId = posts.getMember().getId();
         this.comments = posts.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
     }

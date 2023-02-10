@@ -45,8 +45,9 @@ public class Posts extends BaseEntity {
     @OneToMany(mappedBy = "posts", fetch = FetchType.LAZY)
     private List<Comment> comments;
 
-    public void update(String title, String content) {
+    public void update(String title, BoardType boardType, String content) {
         this.title = title;
+        this.boardType = boardType;
         this.content = content;
     }
 

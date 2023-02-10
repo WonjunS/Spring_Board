@@ -18,8 +18,8 @@ public class CommentRequestDto {
 
     private Long id;
     private String comment;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
     private Member member;
     private Posts posts;
 
