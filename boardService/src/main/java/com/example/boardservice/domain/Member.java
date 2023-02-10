@@ -33,4 +33,13 @@ public class Member extends BaseEntity {
         this.password = password;
     }
 
+    public Member updateModifiedDate() {
+        this.onPreUpdate();
+        return this;
+    }
+
+    public String getRoleValue() {
+        return this.role.getValue();
+    }
+
 }
