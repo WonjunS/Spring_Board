@@ -15,17 +15,20 @@
       $("#writeBtn").click(function() {
         var title = $("#title").val();
         var content = $("#content").val();
-
         var type = $("#boardType").val();
-        alert(type);
 
         if(title === '') {
-          alert("필수 입력 항목입니다.");
+          alert("제목은 필수 입력 항목입니다.");
+          return false;
+        }
+
+        if(type === 'choose...') {
+          alert("게시판 종류를 선택해주세요.");
           return false;
         }
 
         if(content === '') {
-          alert("필수 입력 항목입니다.");
+          alert("내용은 필수 입력 항목입니다.");
           return false;
         }
       });
@@ -39,9 +42,6 @@
       <div>
         <input class="mt-4" type="text" id="title" name="title" placeholder="제목을 입력하세요">
         <br/>
-
-<!--        <input class="mt-4" type="text" id="boardType" name="boardType" placeholder="제목을 입력하세요">-->
-<!--        <br/>-->
 
         <select id="boardType" name="boardType" class="form-control">
           <option selected>Choose...</option>
