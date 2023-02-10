@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div th:fragment="header">
+  <a th:href="@{/}">Home Page</a>
+  <hr>
+  <ul class="nav">
+    <li class="nav-item">
+      <a sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인</a>
+    </li>
+    <li class="nav-item">
+      <a sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
+    </li>
+    <li class="nav-item">
+      <a sec:authorize="isAnonymous()" th:href="@{/member/signup}">회원가입</a>
+    </li>
+    <li class="nav-item">
+      <a sec:authorize="isAuthenticated()" th:href="@{/posts/write}">글쓰기</a>
+    </li>
+    <li class="nav-item">
+      <a sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:href="@{/member/list}">회원 목록</a>
+    </li>
+  </ul>
+
+  <hr>
+  <div>
+    <a th:href="@{/member/update}">내 정보</a>
+    <a th:href="@{/posts}">전체 게시판</a>
+    <a th:href="@{/posts/free}">자유 게시판</a>
+    <a th:href="@{/posts/question}">질문 게시판</a>
+    <a th:href="@{/posts/notice}">공지 게시판</a>
+    <a sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:href="@{/member/list}">회원 목록</a>
+  </div>
+</div>
+</html>
