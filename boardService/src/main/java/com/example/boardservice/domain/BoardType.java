@@ -7,9 +7,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum BoardType {
 
-    FREE("FREE_BOARD"),
-    ANNOUNCEMENT("ANNOUNCEMENT_BOARD");
+    FREE("free"),
+    QUESTION("question"),
+    NOTICE("notice");
 
+    @Getter
     private final String value;
 
 }
