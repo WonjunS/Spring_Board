@@ -42,4 +42,12 @@ public class CommentService {
 
         return comment.getId();
     }
+
+    @Transactional
+    public void deleteComments(Long postId) {
+        Posts post = postsRepository.findById(postId)
+                .orElseThrow(EntityNotFoundException::new);
+        commentRepository.deleteAllByPosts(post);
+    }
+
 }
