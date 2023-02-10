@@ -4,6 +4,7 @@ import com.example.boardservice.dto.request.PostsRequestDto;
 import com.example.boardservice.dto.response.CommentResponseDto;
 import com.example.boardservice.dto.response.MemberResponseDto;
 import com.example.boardservice.dto.response.PostsResponseDto;
+import com.example.boardservice.service.CommentService;
 import com.example.boardservice.service.MemberService;
 import com.example.boardservice.service.PostsService;
 import lombok.RequiredArgsConstructor;
@@ -14,23 +15,20 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.PreUpdate;
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
 public class PostsController {
 
-    @Autowired
-    private final PostsService postsService;
-
-    @Autowired
-    private final MemberService memberService;
+    @Autowired private final PostsService postsService;
+    @Autowired private final MemberService memberService;
+    @Autowired private final CommentService commentService;
 
     // 게시물 불러오기 (최신순)
     @GetMapping("/posts")
@@ -77,7 +75,7 @@ public class PostsController {
     }
 
     // 특정 게시물 불러오기
-    @GetMapping("/posts/read/{postsId}")
+    @GetMapping("/post/read/{postsId}")
     public String getPost(@PathVariable("postsId") Long postsId, Model model) {
         PostsResponseDto postsDto = postsService.getPost(postsId);
         List<CommentResponseDto> comments = postsDto.getComments();
@@ -97,7 +95,6 @@ public class PostsController {
     public String getPostByMember(@PathVariable("memberId") Long memberId, Model model, Principal principal,
                                   @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         model.addAttribute("boardList", postsService.getAllPostsByWriter(principal.getName(), pageable));
-        System.out.println(memberId);
         return "posts/memberBoard";
     }
 
@@ -110,13 +107,42 @@ public class PostsController {
     @GetMapping("/posts/question")
     public String getQuestionBoard(Model model, Pageable pageable) {
         model.addAttribute("boardList", postsService.getAllQuestionPosts(pageable));
-        return "posts/freeBoard";
+        return "posts/questionBoard";
     }
 
     @GetMapping("/posts/notice")
     public String getNoticeBoard(Model model, Pageable pageable) {
         model.addAttribute("boardList", postsService.getAllNoticePosts(pageable));
-        return "posts/freeBoard";
+        return "posts/noticeBoard";
+    }
+
+    // 게시물 수정 페이지
+    @GetMapping("/post/update/{postId}")
+    public String updatePage(@PathVariable("postId") Long postId, Model model) {
+        PostsResponseDto postDto = postsService.getPost(postId);
+        postsService.updateView(postId);
+        model.addAttribute("postDto", postDto);
+        return "posts/postsUpdate";
+    }
+
+    // 게시물 수정하기
+    @PutMapping("/post/update/{postId}")
+    public String update(@PathVariable("postId") Long postId, @RequestParam("title") String title,
+                         @RequestParam("boardType") String boardType, @RequestParam("content") String content) {
+        PostsRequestDto postDto = PostsRequestDto.builder()
+                .title(title)
+                .content(content)
+                .build();
+        postsService.updatePost(postId, boardType, postDto);
+        return "redirect:/posts";
+    }
+
+    // 게시물 삭제하기
+    @DeleteMapping("/post/delete/{postId}")
+    public String delete(@PathVariable("postId") Long postId) {
+        commentService.deleteComments(postId);
+        postsService.deletePost(postId);
+        return "redirect:/posts";
     }
 
 }
