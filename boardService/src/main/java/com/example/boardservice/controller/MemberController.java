@@ -65,22 +65,49 @@ public class MemberController {
     }
 
     @GetMapping("/update")
-    public String updatePage(Principal principal, Model model) {
+    public String memberUpdate(Principal principal, Model model) {
         MemberResponseDto memberDto = memberService.findMember(principal.getName());
-        model.addAttribute("memberDto", memberDto);
+        if(memberDto != null) {
+            model.addAttribute("memberDto", memberDto);
+        }
 
         return "member/updateForm";
     }
 
     @PostMapping("/update")
-    public String memberUpdate(@RequestParam(value = "nickname") String nickname,
-                               @RequestParam(value = "email") String email) {
+    public String update(@RequestParam(value = "nickname") String nickname,
+                         @RequestParam(value = "email") String email) {
         try {
             memberService.updateMemberNickname(email, nickname);
         } catch(Exception e) {
             System.out.println(e.getMessage());
             return "redirect:/member/update";
         }
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "/nicknameCheck", method = RequestMethod.GET)
+    @ResponseBody
+    public int confirmNickname(@RequestParam("nickname") String nickname) throws Exception {
+        boolean result = memberService.isDuplicateNickname(nickname);
+
+        if(result) return 1;
+        return 0;
+    }
+
+    @GetMapping("/{memberId}/delete")
+    public String memberDelete(@PathVariable("memberId") Long memberId, Principal principal, Model model) {
+        MemberResponseDto memberDto = memberService.findMember(principal.getName());
+        if(memberDto != null) {
+            model.addAttribute("memberDto", memberDto);
+        }
+        return "member/memberDelete";
+    }
+
+    @DeleteMapping("/{memberId}/delete")
+    public String delete(@RequestParam(value = "nickname") String nickname,
+                         @RequestParam(value = "email") String email) {
+        memberService.deleteMember(email, nickname);
         return "redirect:/";
     }
 
