@@ -21,6 +21,12 @@ public class MemberService {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private PostsService postsService;
+
+    @Autowired
+    private CommentService commentService;
+
     // 회원 정보 저장
     @Transactional
     public void save(MemberRequestDto memberDto) {
@@ -52,6 +58,10 @@ public class MemberService {
         }
     }
 
+    public boolean isDuplicateNickname(String nickname) {
+        return memberRepository.existsByNickname(nickname);
+    }
+
     // 특정 회원 찾기
     public MemberResponseDto findMember(String email) {
         Member member = memberRepository.findByEmail(email);
@@ -77,4 +87,14 @@ public class MemberService {
         Long memberId = memberRepository.findByEmail(email).getId();
         return memberRepository.updateNickname(memberId, nickname);
     }
+
+    // 회원 탈퇴 기능
+    public void deleteMember(String email, String nickname) {
+        Long memberId = memberRepository.findByEmail(email).getId();
+
+        commentService.deleteAllCommentsByMemberId(memberId);
+        postsService.deleteAllPostsByMemberId(memberId);
+        memberRepository.deleteById(memberId);
+    }
+
 }
