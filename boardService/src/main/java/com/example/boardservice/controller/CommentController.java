@@ -17,10 +17,10 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    @PostMapping("/posts/{postsId}/write")
-    public String writeComment(@PathVariable("postsId") Long postsId, CommentRequestDto dto, Principal principal) {
-        commentService.save(postsId, principal.getName(), dto);
+    @PostMapping("/post/{postId}/write")
+    public String writeComment(@PathVariable("postId") Long postId, CommentRequestDto dto, Principal principal) {
+        commentService.save(postId, principal.getName(), dto);
 
-        return "redirect:/";
+        return "redirect:/post/read/{postsId}";
     }
 }

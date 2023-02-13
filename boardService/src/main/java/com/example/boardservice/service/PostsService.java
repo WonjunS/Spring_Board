@@ -94,6 +94,7 @@ public class PostsService {
         return posts;
     }
 
+    // 자유 게시판에 있는 게시글 가져오기
     @Transactional(readOnly = true)
     public Page<PostsResponseDto> getAllFreePosts(Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
@@ -105,6 +106,7 @@ public class PostsService {
         return posts;
     }
 
+    // 질문 게시판에 있는 게시글 가져오기
     public Object getAllQuestionPosts(Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
         pageable = PageRequest.of(page, 10, Sort.by("id").descending());
@@ -115,6 +117,7 @@ public class PostsService {
         return posts;
     }
 
+    // 공지 게시판에 있는 게시글 가져오기
     public Object getAllNoticePosts(Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
         pageable = PageRequest.of(page, 10, Sort.by("id").descending());
@@ -139,20 +142,29 @@ public class PostsService {
     }
 
     // 게시물 삭제하기
-    @Transactional
+    @Transactional(readOnly = true)
     public void deletePost(Long id) {
         postsRepository.deleteById(id);
     }
 
     // 게시물 조회수 업데이트
-    @Transactional
+    @Transactional(readOnly = true)
     public int updateView(Long postsId) {
         return postsRepository.updateView(postsId);
     }
 
-    @Transactional
+    // 게시물 좋아요 수 업데이트
+    @Transactional(readOnly = true)
     public int updateLikes(Long postsId) {
         return postsRepository.updateLikes(postsId);
+    }
+
+    // 특정 회원이 작성한 모든 게시물 삭제
+    @Transactional(readOnly = true)
+    public void deleteAllPostsByMemberId(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(EntityNotFoundException::new);
+        postsRepository.deleteAllByMember(member);
     }
 
 }
