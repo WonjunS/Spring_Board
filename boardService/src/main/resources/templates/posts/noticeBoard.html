@@ -179,7 +179,7 @@
 <div layout:fragment="content">
   <div class="page-title">
     <div class="container">
-      <h3>자유 게시판</h3>
+      <h3>공지사항</h3>
     </div>
   </div>
 
@@ -233,29 +233,29 @@
     <ul class="pagination justify-content-center" th:with="start=${T(java.lang.Math).floor(boardList.number / 10) * 10 + 1},
                     last=(${start + 9 < boardList.totalPages ? start + 9 : boardList.totalPages})">
       <li class="page-item">
-        <a class="page-link" th:href="@{/posts/free(page=1)}" aria-label="First">
+        <a class="page-link" th:href="@{/posts/notice(page=1)}" aria-label="First">
           <span aria-hidden="true">First</span>
         </a>
       </li>
 
       <li class="page-item" th:class="${boardList.first} ? 'disabled'">
-        <a class="page-link" th:href="${boardList.first} ? '#' :@{/posts/free(page=${boardList.number})}" aria-label="Previous">
+        <a class="page-link" th:href="${boardList.first} ? '#' :@{/posts/notice(page=${boardList.number})}" aria-label="Previous">
           <span aria-hidden="true">Previous</span>
         </a>
       </li>
 
       <li class="page-item" th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == boardList.number + 1} ? 'active'">
-        <a class="page-link" th:text="${page}" th:href="@{/posts/free(page=${page})}"></a>
+        <a class="page-link" th:text="${page}" th:href="@{/posts/notice(page=${page})}"></a>
       </li>
 
       <li class="page-item" th:class="${boardList.last} ? 'disabled'">
-        <a class="page-link" th:href="${boardList.last} ? '#' : @{/posts/free(page=${boardList.number + 2})}" aria-label="Next">
+        <a class="page-link" th:href="${boardList.last} ? '#' : @{/posts/notice(page=${boardList.number + 2})}" aria-label="Next">
           <span aria-hidden="true">Next</span>
         </a>
       </li>
 
       <li class="page-item">
-        <a class="page-link" th:href="@{/posts/free(page=${boardList.totalPages})}" aria-label="Last">
+        <a class="page-link" th:href="@{/posts/notice(page=${boardList.totalPages})}" aria-label="Last">
           <span aria-hidden="true">Last</span>
         </a>
       </li>

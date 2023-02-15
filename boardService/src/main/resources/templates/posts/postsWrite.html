@@ -37,29 +37,34 @@
 </th:block>
 
 <div layout:fragment="content">
-  <div>
-    <form name="write-form" method="post" th:action="@{/posts/write}">
-      <div>
-        <input class="mt-4" type="text" id="title" name="title" placeholder="제목을 입력하세요">
-        <br/>
-
-        <select id="boardType" name="boardType" class="form-control">
-          <option selected>Choose...</option>
-          <option>자유게시판</option>
-          <option>공지사항</option>
-          <option>질문게시판</option>
-        </select>
-
-        <input class="mt-4" type="hidden" id="writer" name="writer" placeholder="작성자 이름" th:value="${member.nickname}" readonly>
-        <br/>
-
-        <div id="content_div">
-          <textarea class="form-control" style="height:100%; width:100%;" maxlength='1000' id="content" name="content"></textarea>
-        </div>
-        <br />
-        <button type="submit" id="writeBtn" class="btn btn-outline-primary mr-2">Write</button>
-      </div>
-    </form>
-  </div>
+  <form name="write-form" method="post" th:action="@{/post/write}">
+    <div class="container">
+      <h2>게시판 글쓰기</h2>
+      <table class="table table-borderless">
+        <tbody>
+        <tr>
+          <td><input type="text" class="form-control" placeholder="제목을 작성하세요." name="title" maxlength="40"></td>
+        </tr>
+        <tr>
+          <input type="hidden" name="writer" placeholder="작성자 이름" th:value="${member.nickname}">
+        </tr>
+        <tr>
+          <td>
+            <select name="boardType" class="form-control">
+              <option selected>Choose...</option>
+              <option>자유게시판</option>
+              <option>공지사항</option>
+              <option>질문게시판</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td><textarea type="text" class="form-control" placeholder="글 내용을 작성하세요" name="content" maxlength="1024" style="height: 400px;"></textarea></td>
+        </tr>
+        </tbody>
+      </table>
+      <input type="submit" class="btn btn-outline-primary float-right" value="글쓰기">
+    </div>
+  </form>
 </div>
 </html>

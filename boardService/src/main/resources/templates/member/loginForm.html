@@ -21,10 +21,13 @@
             <label th:for="email">Email</label>
             <input type="email" name="email" class="form-control">
         </div>
+        <br>
+        <br>
         <div class="form-group">
             <label th:for="password">Password</label>
             <input type="password" name="password" id="password" class="form-control">
         </div>
+        <br>
         <p th:if="${loginErrorMsg}" class="error" th:text="${loginErrorMsg}"></p>
         <button type="submit" class="btn btn-primary">로그인</button>
         <button type="button" class="btn btn-primary" onClick="location.href='/member/signup'">회원가입</button>

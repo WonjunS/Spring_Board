@@ -38,24 +38,38 @@
 
 <div layout:fragment="content">
   <div>
-    <form name="write-form" method="post" th:action="@{'/post/update/' + ${postDto.id}}">
-      <div>
-        <input type="hidden" name="_method" value="PUT">
-        <input id="postId" type="hidden" th:value="${postDto.id}">
-        <input class="mt-4" type="text" id="title" name="title" th:value="${postDto.title}">
-        <br/>
-        <select id="boardType" name="boardType" class="form-control">
-          <option selected>Choose...</option>
-          <option>자유게시판</option>
-          <option>공지사항</option>
-          <option>질문게시판</option>
-        </select>
-
-        <div id="content_div">
-          <textarea class="form-control" style="height:100%; width:100%;" maxlength='1000' id="content" name="content" th:text="${postDto.content}"></textarea>
-        </div>
-        <br />
-        <button type="submit" id="writeBtn" class="btn btn-outline-primary mr-2">Write</button>
+    <form name="write-form" method="post" th:action="@{'/post/' + ${postDto.id} + '/update'}">
+      <div class="container">
+        <h2>게시판 글쓰기</h2>
+        <table class="table table-borderless">
+          <tbody>
+          <tr>
+            <input type="hidden" name="_method" value="PUT">
+          </tr>
+          <tr>
+            <input id="postId" type="hidden" th:value="${postDto.id}">
+          </tr>
+          <tr>
+            <td><input type="text" class="form-control" name="title" th:value="${postDto.title}" maxlength="40"></td>
+          </tr>
+          <tr>
+            <td>
+              <select name="boardType" class="form-control">
+                <option selected>Choose...</option>
+                <option>자유게시판</option>
+                <option>공지사항</option>
+                <option>질문게시판</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <textarea type="text" class="form-control" name="content" th:text="${postDto.content}" maxlength="1024" style="height: 400px;"></textarea>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <input type="submit" class="btn btn-outline-primary float-right" value="수정하기">
       </div>
     </form>
   </div>
