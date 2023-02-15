@@ -56,17 +56,19 @@
 </th:block>
 
 <div layout:fragment="content">
-    <h1>회원 가입</h1>
-    <hr>
     <form th:action="@{/member/signup}" method="post" role="form" th:object="${memberDto}" style="width: 50%; margin: 0 auto;">
+        <h2>회원가입</h2>
+        <hr>
         <div class="form-group">
             <label for="nickname">Nickname</label>
             <input id="nickname" type="text" name="nickname" class="form-control">
         </div>
+        <br>
         <div class="form-group">
             <label for="email">Email</label>
             <input id="email" type="text" name="email" class="form-control">
         </div>
+        <br>
         <div class="form-group">
             <label for="password">Password</label>
             <input id="password" type="password" name="password" class="form-control">
