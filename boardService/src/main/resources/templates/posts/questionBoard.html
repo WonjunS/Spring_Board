@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainLayout}">
+
+<th:block layout:fragment="css">
+  <style>
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    .page-title {
+      margin-bottom: 60px;
+    }
+    .page-title h3 {
+      font-size: 28px;
+      color: #333333;
+      font-weight: 400;
+      text-align: center;
+    }
+
+    #board-search .search-window {
+      padding: 15px 0;
+      background-color: #f9f7f9;
+    }
+    #board-search .search-window .search-wrap {
+      position: relative;
+      /*   padding-right: 124px; */
+      margin: 0 auto;
+      width: 80%;
+      max-width: 564px;
+    }
+    #board-search .search-window .search-wrap input {
+      height: 40px;
+      width: 100%;
+      font-size: 14px;
+      padding: 7px 14px;
+      border: 1px solid #ccc;
+    }
+    #board-search .search-window .search-wrap input:focus {
+      border-color: #333;
+      outline: 0;
+      border-width: 1px;
+    }
+    #board-search .search-window .search-wrap .btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 108px;
+      padding: 0;
+      font-size: 16px;
+    }
+
+    .board-table {
+      font-size: 13px;
+      width: 100%;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .board-table a {
+      color: #333;
+      display: inline-block;
+      line-height: 1.4;
+      word-break: break-all;
+      vertical-align: middle;
+    }
+    .board-table a:hover {
+      text-decoration: underline;
+    }
+    .board-table th {
+      text-align: center;
+    }
+
+    .board-table .th-num {
+      width: 100px;
+      text-align: center;
+    }
+
+    .board-table .th-date {
+      width: 200px;
+    }
+
+    .board-table th, .board-table td {
+      padding: 14px 0;
+    }
+
+    .board-table tbody td {
+      border-top: 1px solid #e7e7e7;
+      text-align: center;
+    }
+
+    .board-table tbody th {
+      padding-left: 28px;
+      padding-right: 14px;
+      border-top: 1px solid #e7e7e7;
+      text-align: left;
+    }
+
+    .board-table tbody th p{
+      display: none;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0 30px;
+      font-size: 15px;
+      font-weight: 400;
+      background: transparent;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      -ms-touch-action: manipulation;
+      touch-action: manipulation;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      border: 1px solid transparent;
+      text-transform: uppercase;
+      -webkit-border-radius: 0;
+      -moz-border-radius: 0;
+      border-radius: 0;
+      -webkit-transition: all 0.3s;
+      -moz-transition: all 0.3s;
+      -ms-transition: all 0.3s;
+      -o-transition: all 0.3s;
+      transition: all 0.3s;
+    }
+
+    .btn-dark {
+      background: #555;
+      color: #fff;
+    }
+
+    .btn-dark:hover, .btn-dark:focus {
+      background: #373737;
+      border-color: #373737;
+      color: #fff;
+    }
+
+    .btn-dark {
+      background: #555;
+      color: #fff;
+    }
+
+    .btn-dark:hover, .btn-dark:focus {
+      background: #373737;
+      border-color: #373737;
+      color: #fff;
+    }
+
+  </style>
+</th:block>
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    $(document).ready(function(){
+      var errorMessage = [[${errorMessage}]];
+      if(errorMessage != null){
+        alert(errorMessage);
+      }
+    });
+
+    $(document).ready(function() {
+      $("#writeBtn").on('click', function() {
+        alert("로그인 후 이용 가능합니다.");
+        window.location.href='/member/login';
+      });
+    });
+
+  </script>
+</th:block>
+
+<div layout:fragment="content">
+  <div class="page-title">
+    <div class="container">
+      <h3>질문 게시판</h3>
+    </div>
+  </div>
+
+  <div id="board-search">
+    <div class="container">
+      <div class="search-window">
+        <form action="/posts/search" method="GET">
+          <div class="search-wrap">
+            <input id="search" name="keyword" type="text" placeholder="검색어를 입력해주세요.">
+            <button type="submit" class="btn btn-dark">검색</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="board-list">
+    <div class="container">
+      <table class="board-table">
+        <thead>
+        <tr>
+          <th style="width: 10%">번호</th>
+          <th style="width: 45%">제목</th>
+          <th style="width: 20%">작성자</th>
+          <th style="width: 15%">작성일</th>
+          <th style="width: 10%">조회수</th>
+        </tr>
+        </thead>
+        <tbody th:each="post, status: ${boardList.getContent()}">
+        <tr>
+          <td>[[${post.id}]]</td>
+          <td class="text-left" sec:authorize="isAnonymous()"><a th:href="@{/post/read/{id}(id = ${post.id})}">[[${post.title}]]</a></td>
+          <td class="text-left" sec:authorize="isAuthenticated()"><a th:href="@{/post/read/{id}(id = ${post.id})}">[[${post.title}]]</a></td>
+          <td>[[${post.writer}]]</td>
+          <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+          <td>[[${post.view}]]</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="text-right" sec:authorize="isAnonymous()">
+    <button id="writeBtn" type="button" class="btn btn-outline-primary">글쓰기</button>
+  </div>
+  <div class="text-right" sec:authorize="isAuthenticated()">
+    <a id="writeBtn_" href="/post/write" role="button" class="btn btn-primary bi bi-pencil-fill">글쓰기</a>
+  </div>
+
+  <nav aria-label="Page navigation example" style="text-align: center;">
+    <ul class="pagination justify-content-center" th:with="start=${T(java.lang.Math).floor(boardList.number / 10) * 10 + 1},
+                    last=(${start + 9 < boardList.totalPages ? start + 9 : boardList.totalPages})">
+      <li class="page-item">
+        <a class="page-link" th:href="@{/posts/question(page=1)}" aria-label="First">
+          <span aria-hidden="true">First</span>
+        </a>
+      </li>
+
+      <li class="page-item" th:class="${boardList.first} ? 'disabled'">
+        <a class="page-link" th:href="${boardList.first} ? '#' :@{/posts/question(page=${boardList.number})}" aria-label="Previous">
+          <span aria-hidden="true">Previous</span>
+        </a>
+      </li>
+
+      <li class="page-item" th:each="page: ${#numbers.sequence(start, last)}" th:class="${page == boardList.number + 1} ? 'active'">
+        <a class="page-link" th:text="${page}" th:href="@{/posts/question(page=${page})}"></a>
+      </li>
+
+      <li class="page-item" th:class="${boardList.last} ? 'disabled'">
+        <a class="page-link" th:href="${boardList.last} ? '#' : @{/posts/question(page=${boardList.number + 2})}" aria-label="Next">
+          <span aria-hidden="true">Next</span>
+        </a>
+      </li>
+
+      <li class="page-item">
+        <a class="page-link" th:href="@{/posts/question(page=${boardList.totalPages})}" aria-label="Last">
+          <span aria-hidden="true">Last</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+</div>
+</html>
