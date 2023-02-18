@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainLayout}">
+
+<th:block layout:fragment="css">
+</th:block>
+
+<th:block layout:fragment="script">
+</th:block>
+
+<div layout:fragment="content">
+  <div class="card" style="width: 36rem; margin: 0 auto">
+    <h1>내 정보</h1>
+    <hr>
+    <div class="card-body">
+      <p class="card-text" th:text="${memberDto.nickname}"></p>
+      <p class="card-text" th:text="${memberDto.email}"></p>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item"><a th:href="@{'/posts/all/' + ${memberDto.id}}">내가 쓴 글 보기</a></li>
+      <li class="list-group-item"><a th:href="@{'/member/' + ${memberDto.id} + '/update'}">수정하기</a></li>
+      <li class="list-group-item"><a th:href="@{'/member/' + ${memberDto.id} + '/delete'}">탈퇴하기</a></li>
+    </ul>
+  </div>
+</div>
+</html>
