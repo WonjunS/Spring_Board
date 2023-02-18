@@ -128,6 +128,48 @@ public class PostsService {
         return posts;
     }
 
+    // 특정 게시판에 있는 게시글 불러오기
+    public List<PostsResponseDto> getAllPostsByBoardType(BoardType boardType) {
+        List<Posts> posts = postsRepository.getAllByBoardType(boardType);
+        List<PostsResponseDto> postsList = new ArrayList<>();
+
+        int count = 0;
+        while(count < 10 && count < posts.size()) {
+            Posts p = posts.get(count);
+            PostsResponseDto postsDto = new PostsResponseDto(p);
+            postsList.add(postsDto);
+            count++;
+        }
+
+        while(count < 10) {
+            postsList.add(new PostsResponseDto());
+            count++;
+        }
+
+        return postsList;
+    }
+
+    // 조회수 순으로 게시글 불러오기
+    public List<PostsResponseDto> getAllPostsByView() {
+        List<Posts> posts = postsRepository.getAllAndOrderByView();
+        List<PostsResponseDto> postsList = new ArrayList<>();
+
+        int count = 0;
+        while(count < 10 && count < posts.size()) {
+            Posts p = posts.get(count);
+            PostsResponseDto postsDto = new PostsResponseDto(p);
+            postsList.add(postsDto);
+            count++;
+        }
+
+        while(count < 10) {
+            postsList.add(new PostsResponseDto());
+            count++;
+        }
+
+        return postsList;
+    }
+
     // 게시물 수정하기
     @Transactional
     public void updatePost(Long id, String boardType, PostsRequestDto postsDto) {
@@ -142,25 +184,25 @@ public class PostsService {
     }
 
     // 게시물 삭제하기
-    @Transactional(readOnly = true)
+    @Transactional
     public void deletePost(Long id) {
         postsRepository.deleteById(id);
     }
 
     // 게시물 조회수 업데이트
-    @Transactional(readOnly = true)
+    @Transactional
     public int updateView(Long postsId) {
         return postsRepository.updateView(postsId);
     }
 
     // 게시물 좋아요 수 업데이트
-    @Transactional(readOnly = true)
+    @Transactional
     public int updateLikes(Long postsId) {
         return postsRepository.updateLikes(postsId);
     }
 
     // 특정 회원이 작성한 모든 게시물 삭제
-    @Transactional(readOnly = true)
+    @Transactional
     public void deleteAllPostsByMemberId(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(EntityNotFoundException::new);
