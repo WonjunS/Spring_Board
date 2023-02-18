@@ -165,14 +165,22 @@
         alert(errorMessage);
       }
     });
-
+  </script>
+  <script>
     $(document).ready(function() {
-      $("#writeBtn").on('click', function() {
+      $("#writeBtn").click(function() {
         alert("로그인 후 이용 가능합니다.");
         window.location.href='/member/login';
       });
     });
-
+  </script>
+  <script>
+    $(document).ready(function() {
+      $(".readBtn").click(function() {
+        alert("로그인 후 이용 가능합니다.");
+        window.location.href='/member/login';
+      });
+    });
   </script>
 </th:block>
 
@@ -211,8 +219,8 @@
         <tbody th:each="post, status: ${boardList.getContent()}">
         <tr>
           <td>[[${post.id}]]</td>
-          <td class="text-left" sec:authorize="isAnonymous()"><a th:href="@{/post/read/{id}(id = ${post.id})}">[[${post.title}]]</a></td>
-          <td class="text-left" sec:authorize="isAuthenticated()"><a th:href="@{/post/read/{id}(id = ${post.id})}">[[${post.title}]]</a></td>
+          <td sec:authorize="isAnonymous()" class="text-left"><a class="readBtn" role="button" th:href="@{/member/login}">[[${post.title}]]</a></td>
+          <td sec:authorize="isAuthenticated()" class="text-left"><a th:href="@{/post/read/{id}(id = ${post.id})}">[[${post.title}]]</a></td>
           <td>[[${post.writer}]]</td>
           <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
           <td>[[${post.view}]]</td>
@@ -223,7 +231,7 @@
   </div>
 
   <div class="text-right" sec:authorize="isAnonymous()">
-    <button id="writeBtn" type="button" class="btn btn-outline-primary">글쓰기</button>
+    <button id="writeBtn" type="submit" class="btn btn-outline-primary">글쓰기</button>
   </div>
   <div class="text-right" sec:authorize="isAuthenticated()">
     <a id="writeBtn_" href="/post/write" role="button" class="btn btn-primary bi bi-pencil-fill">글쓰기</a>
