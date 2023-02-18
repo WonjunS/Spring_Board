@@ -18,14 +18,9 @@ import javax.persistence.EntityNotFoundException;
 @RequiredArgsConstructor
 public class CommentService {
 
-    @Autowired
-    private final CommentRepository commentRepository;
-
-    @Autowired
-    private final PostsRepository postsRepository;
-
-    @Autowired
-    private final MemberRepository memberRepository;
+    @Autowired private final CommentRepository commentRepository;
+    @Autowired private final PostsRepository postsRepository;
+    @Autowired private final MemberRepository memberRepository;
 
     @Transactional
     public Long save(Long postsId, String email, CommentRequestDto dto) {
@@ -44,10 +39,17 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComments(Long postId) {
+    public void deleteAllCommentsByPostId(Long postId) {
         Posts post = postsRepository.findById(postId)
                 .orElseThrow(EntityNotFoundException::new);
         commentRepository.deleteAllByPosts(post);
+    }
+
+    @Transactional
+    public void deleteAllCommentsByMemberId(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(EntityNotFoundException::new);
+        commentRepository.deleteAllByMember(member);
     }
 
 }

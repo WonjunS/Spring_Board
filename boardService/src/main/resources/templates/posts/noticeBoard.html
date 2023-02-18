@@ -153,7 +153,6 @@
       border-color: #373737;
       color: #fff;
     }
-
   </style>
 </th:block>
 
@@ -165,14 +164,22 @@
         alert(errorMessage);
       }
     });
-
+  </script>
+  <script>
     $(document).ready(function() {
-      $("#writeBtn").on('click', function() {
+      $("#writeBtn").click(function() {
         alert("로그인 후 이용 가능합니다.");
         window.location.href='/member/login';
       });
     });
-
+  </script>
+  <script>
+    $(document).ready(function() {
+      $(".readBtn").click(function() {
+        alert("로그인 후 이용 가능합니다.");
+        window.location.href='/member/login';
+      });
+    });
   </script>
 </th:block>
 
@@ -211,7 +218,7 @@
         <tbody th:each="post, status: ${boardList.getContent()}">
         <tr>
           <td>[[${post.id}]]</td>
-          <td class="text-left" sec:authorize="isAnonymous()"><a th:href="@{/post/read/{id}(id = ${post.id})}">[[${post.title}]]</a></td>
+          <td class="text-left" sec:authorize="isAnonymous()"><a class="readBtn" role="button" th:href="@{/member/login}">[[${post.title}]]</a></td>
           <td class="text-left" sec:authorize="isAuthenticated()"><a th:href="@{/post/read/{id}(id = ${post.id})}">[[${post.title}]]</a></td>
           <td>[[${post.writer}]]</td>
           <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>

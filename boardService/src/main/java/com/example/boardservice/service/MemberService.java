@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class MemberService {
         Member findMember = memberRepository.findByEmail(email);
 
         if(findMember != null) {
-            throw new IllegalStateException("이미 존재하는 회원입니다.");
+            throw new IllegalStateException("이미 사용중인 이메일 입니다.");
         }
     }
 
@@ -54,7 +55,7 @@ public class MemberService {
         Member findMember = memberRepository.findByNickname(nickname);
 
         if(findMember != null) {
-            throw new IllegalStateException("이미 존재하는 닉네임 입니다.");
+            throw new IllegalStateException("이미 사용중인 닉네임 입니다.");
         }
     }
 
@@ -63,6 +64,12 @@ public class MemberService {
     }
 
     // 특정 회원 찾기
+    public MemberResponseDto findMember(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
+        return new MemberResponseDto(member);
+    }
+
     public MemberResponseDto findMember(String email) {
         Member member = memberRepository.findByEmail(email);
         return new MemberResponseDto(member);

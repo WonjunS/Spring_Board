@@ -11,16 +11,18 @@ import java.util.stream.Collectors;
 @Getter
 public class PostsResponseDto {
 
-    private final Long id;
-    private final String title;
-    private final String content;
-    private final String writer;
-    private final int view;
-    private final int likes;
-    private final BoardType boardType;
-    private final Long memberId;
+    private Long id;
+    private String title;
+    private String content;
+    private String writer;
+    private int view;
+    private int likes;
+    private BoardType boardType;
+    private Long memberId;
     private LocalDateTime createdAt, modifiedAt;
-    private final List<CommentResponseDto> comments;
+    private List<CommentResponseDto> comments;
+
+    public PostsResponseDto() {}
 
     // Entity -> Dto
     public PostsResponseDto(Posts posts) {

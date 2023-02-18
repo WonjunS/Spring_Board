@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainLayout}">
+
+<th:block layout:fragment="css">
+
+</th:block>
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    $(document).ready(function(){
+      var errorMessage = [[${errorMessage}]];
+      if(errorMessage != null){
+        alert(errorMessage);
+      }
+    });
+  </script>
+</th:block>
+
+<div layout:fragment="content">
+  <h1>회원 탈퇴</h1>
+  <hr>
+  <form method="post" th:action="@{'/member/' + ${memberDto.id} + '/delete'}">
+    <input type="hidden" id="nickname" name="nickname" th:value="${memberDto.nickname}">
+    <input type="hidden" id="email" name="email" th:value="${memberDto.email}">
+    <input type="hidden" name="_method" value="DELETE">
+
+    <button id="exit" type="submit" class="btn btn-primary">탈퇴하기</button>
+    <button id="cancel" type="button" class="btn btn-primary"><a href="/member/update">취소하기</a></button>
+  </form>
+</div>
+</html>
