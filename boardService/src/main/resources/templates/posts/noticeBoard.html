@@ -6,6 +6,10 @@
 
 <th:block layout:fragment="css">
   <style>
+    a {
+      color: black;
+    }
+
     table {
       border-collapse: collapse;
       border-spacing: 0;
@@ -44,7 +48,7 @@
       outline: 0;
       border-width: 1px;
     }
-    #board-search .search-window .search-wrap .btn {
+    #board-search .search-window .search-wrap .search-btn {
       position: absolute;
       right: 0;
       top: 0;
@@ -104,7 +108,7 @@
       display: none;
     }
 
-    .btn {
+    .search-btn {
       display: inline-block;
       padding: 0 30px;
       font-size: 15px;
@@ -196,7 +200,7 @@
         <form action="/posts/search" method="GET">
           <div class="search-wrap">
             <input id="search" name="keyword" type="text" placeholder="검색어를 입력해주세요.">
-            <button type="submit" class="btn btn-dark">검색</button>
+            <button type="submit" class="btn btn-dark search-btn">검색</button>
           </div>
         </form>
       </div>
@@ -227,13 +231,6 @@
         </tbody>
       </table>
     </div>
-  </div>
-
-  <div class="text-right" sec:authorize="isAnonymous()">
-    <button id="writeBtn" type="button" class="btn btn-outline-primary">글쓰기</button>
-  </div>
-  <div class="text-right" sec:authorize="isAuthenticated()">
-    <a id="writeBtn_" href="/post/write" role="button" class="btn btn-primary bi bi-pencil-fill">글쓰기</a>
   </div>
 
   <nav aria-label="Page navigation example" style="text-align: center;">
