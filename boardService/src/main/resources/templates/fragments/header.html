@@ -3,34 +3,34 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <div th:fragment="header">
-  <a th:href="@{/}">Home Page</a>
-  <hr>
-  <ul class="nav">
-    <li class="nav-item">
-      <a sec:authorize="isAnonymous()" th:href="@{/member/login}">로그인</a>
-    </li>
-    <li class="nav-item">
-      <a sec:authorize="isAuthenticated()" th:href="@{/member/logout}">로그아웃</a>
-    </li>
-    <li class="nav-item">
-      <a sec:authorize="isAnonymous()" th:href="@{/member/signup}">회원가입</a>
-    </li>
-    <li class="nav-item">
-      <a sec:authorize="isAuthenticated()" th:href="@{/posts/write}">글쓰기</a>
-    </li>
-    <li class="nav-item">
-      <a sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:href="@{/member/list}">회원 목록</a>
-    </li>
-  </ul>
+  <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-light border-bottom shadow-sm">
+    <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+      </svg>
+    </a>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" th:href="@{/posts}">전체 게시판</a></li>
+      <li><a class="dropdown-item" th:href="@{/posts/free}">자유 게시판</a></li>
+      <li><a class="dropdown-item" th:href="@{/posts/question}">질문 게시판</a></li>
+      <li><a class="dropdown-item" th:href="@{/posts/notice}">공지 게시판</a></li>
+      <li sec:authorize="isAuthenticated()"><div class="dropdown-divider"></div></li>
+      <li sec:authorize="isAuthenticated()"><a class="dropdown-item" th:href="@{/post/write}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+          <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+        </svg>
+        글쓰기
+      </a></li>
+    </ul>
 
-  <hr>
-  <div>
-    <a th:href="@{/member/update}">내 정보</a>
-    <a th:href="@{/posts}">전체 게시판</a>
-    <a th:href="@{/posts/free}">자유 게시판</a>
-    <a th:href="@{/posts/question}">질문 게시판</a>
-    <a th:href="@{/posts/notice}">공지 게시판</a>
-    <a sec:authorize="hasAnyAuthority('ROLE_ADMIN')" th:href="@{/member/list}">회원 목록</a>
+    <h5 class="my-0 mr-md-auto font-weight-normal"><a th:href="@{/}">Home Page</a></h5>
+    <nav class="my-2 my-md-0 mr-md-3">
+      <button sec:authorize="isAnonymous()" type="button" class="btn btn-primary" onclick="location.href='/member/login'">로그인</button>
+      <button sec:authorize="isAnonymous()" type="button" class="btn btn-success" onclick="location.href='/member/signup'">회원가입</button>
+      <button sec:authorize="isAuthenticated()" type="button" class="btn btn-primary" onclick="location.href='/member/info'">내정보</button>
+      <button sec:authorize="isAuthenticated()" type="button" class="btn btn-primary" onclick="location.href='/member/logout'">로그아웃</button>
+    </nav>
   </div>
 </div>
 </html>
