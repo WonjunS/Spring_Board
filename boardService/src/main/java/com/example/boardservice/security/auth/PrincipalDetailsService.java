@@ -2,6 +2,7 @@ package com.example.boardservice.security.auth;
 
 import com.example.boardservice.domain.Member;
 import com.example.boardservice.repository.MemberRepository;
+import com.example.boardservice.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,8 +12,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PrincipalDetailsService implements UserDetailsService {
-    @Autowired
-    private MemberRepository memberRepository;
+
+    @Autowired private MemberRepository memberRepository;
+    @Autowired private MemberService memberService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -21,6 +23,8 @@ public class PrincipalDetailsService implements UserDetailsService {
         if(member == null) {
             throw new UsernameNotFoundException("Could not find user");
         }
+
+        memberService.updateVisits(member.getId());
 
         return User.builder()
                 .username(member.getEmail())
