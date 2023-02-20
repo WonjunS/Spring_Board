@@ -6,7 +6,9 @@
 
 <th:block layout:fragment="css">
   <style>
-
+    a {
+      color: black;
+    }
   </style>
 </th:block>
 
@@ -38,92 +40,96 @@
 </th:block>
 
 <div layout:fragment="content">
-  <div class="container" style="margin: 0 auto;">
-    <div class="row">
-      <div class="col article-board">
-        <div class="table-tit">
-          <h3><a th:href="@{/posts}">전체 게시판</a></h3>
+  <div id="container">
+    <div id="content">
+      <div class="container">
+        <div class="row" style="margin-bottom: 50px;">
+          <div class="col article-board">
+            <div class="table-tit">
+              <h3><a th:href="@{/posts}">인기글</a></h3>
+            </div>
+            <table style="width: 100%" class="board-box">
+              <tbody th:each="post : ${popularList}">
+              <tr>
+                <td>
+                  <div sec:authorize="isAnonymous()" class="board-list" style="width: 80%">
+                    <a class="readBtn" role="button" th:href="@{/member/login}" th:text="${post.title}"></a>
+                  </div>
+                  <div sec:authorize="isAuthenticated()" class="board-list" style="width: 80%">
+                    <a th:href="@{'/post/read/' + ${post.id}}" th:text="${post.title}"></a>
+                  </div>
+                </td>
+                <td style="width: 20%" th:text="${post.view}"></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col article-board">
+            <div class="table-tit">
+              <h3><a th:href="@{/posts/notice}">공지사항</a></h3>
+            </div>
+            <table style="width: 100%" class="board-box">
+              <tbody th:each="post : ${noticeList}">
+              <tr>
+                <td>
+                  <div sec:authorize="isAnonymous()" class="board-list" style="width: 80%">
+                    <a class="readBtn" role="button" th:href="@{/member/login}" th:text="${post.title}"></a>
+                  </div>
+                  <div sec:authorize="isAuthenticated()" class="board-list" style="width: 80%">
+                    <a th:href="@{'/post/read/' + ${post.id}}" th:text="${post.title}"></a>
+                  </div>
+                </td>
+                <td style="width: 20%" th:text="${post.view}"></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <table style="width: 100%" class="board-box">
-          <tbody th:each="post : ${popularList}">
-          <tr>
-            <td>
-              <div sec:authorize="isAnonymous()" class="board-list" style="width: 80%">
-                <a class="readBtn" role="button" th:href="@{/member/login}" th:text="${post.title}"></a>
-              </div>
-              <div sec:authorize="isAuthenticated()" class="board-list" style="width: 80%">
-                <a th:href="@{'/post/read/' + ${post.id}}" th:text="${post.title}"></a>
-              </div>
-            </td>
-            <td style="width: 20%" th:text="${post.view}"></td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col article-board">
-        <div class="table-tit">
-          <h3><a th:href="@{/posts/notice}">공지사항</a></h3>
+        <div class="row">
+          <div class="col article-board">
+            <div class="table-tit">
+              <h3><a th:href="@{/posts/free}">자유 게시판</a></h3>
+            </div>
+            <table style="width: 100%" class="board-box">
+              <tbody th:each="post : ${freeList}">
+              <tr>
+                <td>
+                  <div sec:authorize="isAnonymous()" class="board-list" style="width: 80%">
+                    <a class="readBtn" role="button" th:href="@{/member/login}" th:text="${post.title}"></a>
+                  </div>
+                  <div sec:authorize="isAuthenticated()" class="board-list" style="width: 80%">
+                    <a th:href="@{'/post/read/' + ${post.id}}" th:text="${post.title}"></a>
+                  </div>
+                </td>
+                <td style="width: 20%" th:text="${post.view}"></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col article-board">
+            <div class="table-tit">
+              <h3><a th:href="@{/posts/question}">질문 게시판</a></h3>
+            </div>
+            <table style="width: 100%" class="board-box">
+              <tbody th:each="post : ${questionList}">
+              <tr>
+                <td>
+                  <div sec:authorize="isAnonymous()" class="board-list" style="width: 80%">
+                    <a class="readBtn" role="button" th:href="@{/member/login}" th:text="${post.title}"></a>
+                  </div>
+                  <div sec:authorize="isAuthenticated()" class="board-list" style="width: 80%">
+                    <a th:href="@{'/post/read/' + ${post.id}}" th:text="${post.title}"></a>
+                  </div>
+                </td>
+                <td style="width: 20%" th:text="${post.view}"></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <table style="width: 100%" class="board-box">
-          <tbody th:each="post : ${noticeList}">
-          <tr>
-            <td>
-              <div sec:authorize="isAnonymous()" class="board-list" style="width: 80%">
-                <a class="readBtn" role="button" th:href="@{/member/login}" th:text="${post.title}"></a>
-              </div>
-              <div sec:authorize="isAuthenticated()" class="board-list" style="width: 80%">
-                <a th:href="@{'/post/read/' + ${post.id}}" th:text="${post.title}"></a>
-              </div>
-            </td>
-            <td style="width: 20%" th:text="${post.view}"></td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col article-board">
-        <div class="table-tit">
-          <h3><a th:href="@{/posts/free}">자유 게시판</a></h3>
-        </div>
-        <table style="width: 100%" class="board-box">
-          <tbody th:each="post : ${freeList}">
-          <tr>
-            <td>
-              <div sec:authorize="isAnonymous()" class="board-list" style="width: 80%">
-                <a class="readBtn" role="button" th:href="@{/member/login}" th:text="${post.title}"></a>
-              </div>
-              <div sec:authorize="isAuthenticated()" class="board-list" style="width: 80%">
-                <a th:href="@{'/post/read/' + ${post.id}}" th:text="${post.title}"></a>
-              </div>
-            </td>
-            <td style="width: 20%" th:text="${post.view}"></td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col article-board">
-        <div class="table-tit">
-          <h3><a th:href="@{/posts/question}">질문 게시판</a></h3>
-        </div>
-        <hr>
-        <table style="width: 100%" class="board-box">
-          <tbody th:each="post : ${questionList}">
-          <tr class="border-bottom">
-            <td>
-              <div sec:authorize="isAnonymous()" class="board-list" style="width: 80%">
-                <a class="readBtn" role="button" th:href="@{/member/login}" th:text="${post.title}"></a>
-              </div>
-              <div sec:authorize="isAuthenticated()" class="board-list" style="width: 80%">
-                <a th:href="@{'/post/read/' + ${post.id}}" th:text="${post.title}"></a>
-              </div>
-            </td>
-            <td style="width: 20%" th:text="${post.view}"></td>
-          </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
+
 </div>
 </html>

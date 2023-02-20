@@ -4,7 +4,11 @@
       layout:decorate="~{layouts/mainLayout}">
 
 <th:block layout:fragment="css">
-    <style></style>
+    <style>
+        a {
+            color: black;
+        }
+    </style>
 </th:block>
 
 <th:block layout:fragment="script">
@@ -21,7 +25,6 @@
                 <tr><td><textarea type="text" name="content" th:text="${postsDto.content}"></textarea></td>
             </tbody>
         </table>
-        <input type="submit" class="btn btn-outline-primary float-right" value="글쓰기">
     </div>
 
     <div class="card" th:each="comment : ${comments}">

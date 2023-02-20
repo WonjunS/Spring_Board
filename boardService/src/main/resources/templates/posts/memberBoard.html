@@ -6,7 +6,9 @@
 
 <th:block layout:fragment="css">
   <style>
-
+    a {
+      color: black;
+    }
   </style>
 </th:block>
 
@@ -18,38 +20,53 @@
         alert(errorMessage);
       }
     });
-
+  </script>
+  <script>
     $(document).ready(function() {
-      $("#writeBtn").on('click', function() {
-        alert("로그인 후 이용 가능합니다.");
-        window.location.href='/member/login';
+      $(".editBtn").click(function() {
+        var id = $("#postId").val();
+        var url = '/post/' + id + '/update';
+        window.location.href= url;
       });
     });
-
   </script>
 </th:block>
 
 <div layout:fragment="content">
-  <h2>내가 작성한 글</h2>
+  <h3>내가 작성한 글</h3>
+
+  <hr>
+  <br>
 
   <table id="table" class="table table-horizontal">
     <thead id="thead">
     <tr>
       <th>번호</th>
-      <th class="col-md-6 text-center">제목</th>
+      <th>제목</th>
       <th>작성자</th>
       <th>작성일</th>
-      <th>조회수</th>
+<!--      <th>조회수</th>-->
+      <th>수정하기</th>
+      <th>삭제하기</th>
     </tr>
     </thead>
     <tbody id="tbody" th:each="post, status: ${boardList.getContent()}">
     <tr>
       <td>[[${post.id}]]</td>
-      <td sec:authorize="isAnonymous()"><a th:href="@{/posts/read/{id}(id = ${post.id})}">[[${post.title}]]</a></td>
-      <td sec:authorize="isAuthenticated()"><a th:href="@{/posts/read/{id}(id = ${post.id})}">[[${post.title}]]</a></td>
+      <td><a th:href="@{/post/read/{id}(id = ${post.id})}">[[${post.title}]]</a></td>
       <td>[[${post.writer}]]</td>
-      <td>[[${post.id}]]</td>
-      <td>[[${post.view}]]</td>
+      <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+<!--      <td>[[${post.view}]]</td>-->
+      <td>
+        <button type="button" class="btn btn-outline-success editBtn">수정</button>
+      </td>
+      <td>
+        <form id="delete-form" th:action="@{'/post/' + ${post.id} + '/delete'}" method="post">
+          <input type="hidden" name="_method" value="DELETE">
+          <input id="postId" type="hidden" th:value="${post.id}"/>
+          <button id="delete-btn" class="btn btn-outline-danger">삭제</button>
+        </form>
+      </td>
     </tr>
     </tbody>
   </table>

@@ -14,6 +14,7 @@ public class MemberResponseDto implements Serializable {
     private final Long id;
     private final String nickname;
     private final String email;
+    private final int visits;
     private final Role role;
     private final LocalDateTime modifiedAt;
 
@@ -21,6 +22,7 @@ public class MemberResponseDto implements Serializable {
         this.id = member.getId();
         this.nickname = member.getNickname();
         this.email = member.getEmail();
+        this.visits = member.getVisits();
         this.role = member.getRole();
         this.modifiedAt = member.getModifiedAt();
     }

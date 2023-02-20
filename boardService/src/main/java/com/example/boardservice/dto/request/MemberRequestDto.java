@@ -38,6 +38,7 @@ public class MemberRequestDto {
                 .nickname(nickname)
                 .password(password)
                 .email(email)
+                .visits(0)
                 .role(role)
                 .build();
 
