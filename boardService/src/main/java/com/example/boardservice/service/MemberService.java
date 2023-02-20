@@ -64,15 +64,22 @@ public class MemberService {
     }
 
     // 특정 회원 찾기
+    // 아이디를 통해 찾기
     public MemberResponseDto findMember(Long id) {
         Member member = memberRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
         return new MemberResponseDto(member);
     }
 
+    // 이메일을 통해 찾기
     public MemberResponseDto findMember(String email) {
         Member member = memberRepository.findByEmail(email);
         return new MemberResponseDto(member);
+    }
+
+    // 방문 횟수 업데이트
+    public int updateVisits(Long id) {
+        return memberRepository.updateVisits(id);
     }
 
     // 전체 회원 리스트 조회
