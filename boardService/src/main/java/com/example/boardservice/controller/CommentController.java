@@ -21,6 +21,6 @@ public class CommentController {
     public String writeComment(@PathVariable("postId") Long postId, CommentRequestDto dto, Principal principal) {
         commentService.save(postId, principal.getName(), dto);
 
-        return "redirect:/post/read/{postsId}";
+        return "redirect:/post/read/{postId}";
     }
 }
