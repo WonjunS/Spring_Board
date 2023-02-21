@@ -22,6 +22,8 @@
         </svg>
         글쓰기
       </a></li>
+      <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')"><div class="dropdown-divider"></div></li>
+      <li sec:authorize="hasAnyAuthority('ROLE_ADMIN')"><a class="dropdown-item" th:href="@{/member/list}">회원 목록</a></li>
     </ul>
 
     <h5 class="my-0 mr-md-auto font-weight-normal"><a th:href="@{/}">Home Page</a></h5>
