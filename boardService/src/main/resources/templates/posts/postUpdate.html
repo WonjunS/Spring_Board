@@ -8,6 +8,15 @@
     a {
       color: black;
     }
+
+    .ck.ck-editor {
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .ck-editor__editable {
+      height: 80vh;
+    }
   </style>
 </th:block>
 
@@ -64,7 +73,7 @@
           </tr>
           <tr>
             <td>
-              <textarea type="text" class="form-control" name="content" th:text="${postDto.content}" maxlength="1024" style="height: 400px;"></textarea>
+              <textarea type="text" id="content" class="form-control" name="content" th:text="${postDto.content}" maxlength="1024" style="height: 400px;"></textarea>
             </td>
           </tr>
           </tbody>
@@ -72,6 +81,17 @@
         <input type="submit" class="btn btn-outline-primary float-right" value="수정하기">
       </div>
     </form>
+    <script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
+    <script>
+      ClassicEditor
+            .create(document.querySelector('#content'))
+            .then(editor => {
+              console.log('Editor was initialized');
+            })
+            .catch(error => {
+              console.error(error);
+            });
+    </script>
   </div>
 </div>
 </html>
