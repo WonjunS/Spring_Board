@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface PostsRepository extends JpaRepository<Posts, Long> {
 
@@ -27,9 +29,16 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
     @Transactional
     @Query("select p from Posts p where p.boardType = :boardType")
     Page<Posts> findPostsByBoardType(BoardType boardType, Pageable pageable);
-
     Page<Posts> findAllByMember(Member member, Pageable pageable);
     Page<Posts> findByTitleContaining(String keyword, Pageable pageable);
+
+    @Transactional
+    @Query("select p from Posts p where p.boardType = :boardType order by p.id desc")
+    List<Posts> getAllByBoardType(BoardType boardType);
+
+    @Transactional
+    @Query("select p from Posts p order by p.view desc")
+    List<Posts> getAllAndOrderByView();
 
     void deleteById(Long id);
 
