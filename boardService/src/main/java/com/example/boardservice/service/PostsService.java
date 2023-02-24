@@ -1,8 +1,6 @@
 package com.example.boardservice.service;
 
-import com.example.boardservice.domain.BoardType;
-import com.example.boardservice.domain.Member;
-import com.example.boardservice.domain.Posts;
+import com.example.boardservice.domain.*;
 import com.example.boardservice.dto.request.PostsRequestDto;
 import com.example.boardservice.dto.response.PostsResponseDto;
 import com.example.boardservice.repository.MemberRepository;
@@ -60,11 +58,12 @@ public class PostsService {
 
     // 게시물 전체 불러오기
     @Transactional(readOnly = true)
-    public Page<PostsResponseDto> getAllPosts(Pageable pageable) {
+    public Page<PostsResponseDto> getAllPosts(Pageable pageable, String orderCriteria) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
-        pageable = PageRequest.of(page, 10, Sort.by("id").descending());
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, orderCriteria));
 
         Page<PostsResponseDto> posts = postsRepository.findAll(pageable).map(PostsResponseDto::new);
+
         return posts;
     }
 
@@ -96,9 +95,9 @@ public class PostsService {
 
     // 자유 게시판에 있는 게시글 가져오기
     @Transactional(readOnly = true)
-    public Page<PostsResponseDto> getAllFreePosts(Pageable pageable) {
+    public Page<PostsResponseDto> getAllFreePosts(Pageable pageable, String orderCriteria) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
-        pageable = PageRequest.of(page, 10, Sort.by("id").descending());
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, orderCriteria));
 
         Page<PostsResponseDto> posts =
                 postsRepository.findPostsByBoardType(BoardType.FREE, pageable).map(PostsResponseDto::new);
@@ -107,9 +106,9 @@ public class PostsService {
     }
 
     // 질문 게시판에 있는 게시글 가져오기
-    public Object getAllQuestionPosts(Pageable pageable) {
+    public Object getAllQuestionPosts(Pageable pageable, String orderCriteria) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
-        pageable = PageRequest.of(page, 10, Sort.by("id").descending());
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, orderCriteria));
 
         Page<PostsResponseDto> posts =
                 postsRepository.findPostsByBoardType(BoardType.QUESTION, pageable).map(PostsResponseDto::new);
@@ -118,9 +117,9 @@ public class PostsService {
     }
 
     // 공지 게시판에 있는 게시글 가져오기
-    public Object getAllNoticePosts(Pageable pageable) {
+    public Object getAllNoticePosts(Pageable pageable, String orderCriteria) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
-        pageable = PageRequest.of(page, 10, Sort.by("id").descending());
+        pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, orderCriteria));
 
         Page<PostsResponseDto> posts =
                 postsRepository.findPostsByBoardType(BoardType.NOTICE, pageable).map(PostsResponseDto::new);
@@ -141,11 +140,6 @@ public class PostsService {
             count++;
         }
 
-        while(count < 10) {
-            postsList.add(new PostsResponseDto());
-            count++;
-        }
-
         return postsList;
     }
 
@@ -159,11 +153,6 @@ public class PostsService {
             Posts p = posts.get(count);
             PostsResponseDto postsDto = new PostsResponseDto(p);
             postsList.add(postsDto);
-            count++;
-        }
-
-        while(count < 10) {
-            postsList.add(new PostsResponseDto());
             count++;
         }
 
