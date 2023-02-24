@@ -19,9 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
 
-    // TODO: 카카오, 네이버 로그인 구현
-    // https://lotuus.tistory.com/78
-
     @Autowired
     private MemberService memberService;
 
@@ -64,9 +61,18 @@ public class MemberController {
         return "member/memberList";
     }
 
-    @GetMapping("/update")
-    public String memberUpdate(Principal principal, Model model) {
+    @GetMapping("/info")
+    public String memberDetails(Principal principal, Model model) {
         MemberResponseDto memberDto = memberService.findMember(principal.getName());
+        if(memberDto != null) {
+            model.addAttribute("memberDto", memberDto);
+        }
+        return "member/memberInfo";
+    }
+
+    @GetMapping("/{memberId}/update")
+    public String memberUpdate(@PathVariable("memberId") Long memberId, Model model) {
+        MemberResponseDto memberDto = memberService.findMember(memberId);
         if(memberDto != null) {
             model.addAttribute("memberDto", memberDto);
         }
@@ -74,7 +80,7 @@ public class MemberController {
         return "member/updateForm";
     }
 
-    @PostMapping("/update")
+    @PostMapping("/{memberId}/update")
     public String update(@RequestParam(value = "nickname") String nickname,
                          @RequestParam(value = "email") String email) {
         try {
@@ -96,8 +102,8 @@ public class MemberController {
     }
 
     @GetMapping("/{memberId}/delete")
-    public String memberDelete(@PathVariable("memberId") Long memberId, Principal principal, Model model) {
-        MemberResponseDto memberDto = memberService.findMember(principal.getName());
+    public String memberDelete(@PathVariable("memberId") Long memberId, Model model) {
+        MemberResponseDto memberDto = memberService.findMember(memberId);
         if(memberDto != null) {
             model.addAttribute("memberDto", memberDto);
         }

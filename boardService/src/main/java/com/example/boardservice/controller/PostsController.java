@@ -17,10 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.PreUpdate;
 import java.security.Principal;
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,14 +30,16 @@ public class PostsController {
 
     // 게시물 불러오기 (최신순)
     @GetMapping("/posts")
-    public String main(Model model, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        model.addAttribute("boardList", postsService.getAllPosts(pageable));
+    public String main(@RequestParam(required = false, defaultValue = "id", value = "orderby") String orderCriteria,
+                       Model model, Pageable pageable) {
+        Page<PostsResponseDto> posts = postsService.getAllPosts(pageable, orderCriteria);
+        model.addAttribute("boardList", posts);
 
         return "posts/mainBoard";
     }
 
     // 게시물 작성하기
-    @GetMapping("/posts/write")
+    @GetMapping("/post/write")
     public String write(PostsRequestDto postsDto, Principal principal, Model model) {
         MemberResponseDto member = memberService.findMember(principal.getName());
         if(member != null) {
@@ -47,11 +47,11 @@ public class PostsController {
         }
         model.addAttribute("postsDto", postsDto);
 
-        return "posts/postsWrite";
+        return "posts/postWrite";
     }
 
     // 작성된 게시물 저장
-    @PostMapping("/posts/write")
+    @PostMapping("/post/write")
     public String insertData(@RequestParam("title") String title, @RequestParam("boardType") String boardType,
                              @RequestParam("writer") String writer, @RequestParam("content") String content,
                              Principal principal) throws Exception {
@@ -80,14 +80,17 @@ public class PostsController {
         PostsResponseDto postsDto = postsService.getPost(postsId);
         List<CommentResponseDto> comments = postsDto.getComments();
 
+        int count = (comments == null) ? 0 : comments.size();
+
         if(comments != null && !comments.isEmpty()) {
             model.addAttribute("comments", comments);
         }
 
+        model.addAttribute("count", count);
         model.addAttribute("postsDto", postsDto);
         postsService.updateView(postsId);
 
-        return "posts/postsDetail";
+        return "posts/postDetail";
     }
 
     // 특정 회원이 작성한 게시물만 불러오기
@@ -99,34 +102,37 @@ public class PostsController {
     }
 
     @GetMapping("/posts/free")
-    public String getFreeBoard(Model model, Pageable pageable) {
-        model.addAttribute("boardList", postsService.getAllFreePosts(pageable));
+    public String getFreeBoard(@RequestParam(required = false, defaultValue = "id", value = "orderby") String orderCriteria,
+                               Model model, Pageable pageable) {
+        model.addAttribute("boardList", postsService.getAllFreePosts(pageable, orderCriteria));
         return "posts/freeBoard";
     }
 
     @GetMapping("/posts/question")
-    public String getQuestionBoard(Model model, Pageable pageable) {
-        model.addAttribute("boardList", postsService.getAllQuestionPosts(pageable));
+    public String getQuestionBoard(@RequestParam(required = false, defaultValue = "id", value = "orderby") String orderCriteria,
+                                   Model model, Pageable pageable) {
+        model.addAttribute("boardList", postsService.getAllQuestionPosts(pageable, orderCriteria));
         return "posts/questionBoard";
     }
 
     @GetMapping("/posts/notice")
-    public String getNoticeBoard(Model model, Pageable pageable) {
-        model.addAttribute("boardList", postsService.getAllNoticePosts(pageable));
+    public String getNoticeBoard(@RequestParam(required = false, defaultValue = "id", value = "orderby") String orderCriteria,
+                                 Model model, Pageable pageable) {
+        model.addAttribute("boardList", postsService.getAllNoticePosts(pageable, orderCriteria));
         return "posts/noticeBoard";
     }
 
     // 게시물 수정 페이지
-    @GetMapping("/post/update/{postId}")
+    @GetMapping("/post/{postId}/update")
     public String updatePage(@PathVariable("postId") Long postId, Model model) {
         PostsResponseDto postDto = postsService.getPost(postId);
         postsService.updateView(postId);
         model.addAttribute("postDto", postDto);
-        return "posts/postsUpdate";
+        return "posts/postUpdate";
     }
 
     // 게시물 수정하기
-    @PutMapping("/post/update/{postId}")
+    @PutMapping("/post/{postId}/update")
     public String update(@PathVariable("postId") Long postId, @RequestParam("title") String title,
                          @RequestParam("boardType") String boardType, @RequestParam("content") String content) {
         PostsRequestDto postDto = PostsRequestDto.builder()
@@ -134,15 +140,16 @@ public class PostsController {
                 .content(content)
                 .build();
         postsService.updatePost(postId, boardType, postDto);
-        return "redirect:/posts";
+
+        return "redirect:/";
     }
 
     // 게시물 삭제하기
-    @DeleteMapping("/post/delete/{postId}")
+    @DeleteMapping("/post/{postId}/delete")
     public String delete(@PathVariable("postId") Long postId) {
-        commentService.deleteComments(postId);
+        commentService.deleteAllCommentsByPostId(postId);
         postsService.deletePost(postId);
-        return "redirect:/posts";
+        return "redirect:/";
     }
 
 }

@@ -8,35 +8,71 @@
         a {
             color: black;
         }
+
+        .ck.ck-editor__top {
+            display: none;
+        }
     </style>
 </th:block>
 
 <th:block layout:fragment="script">
-    <script></script>
 </th:block>
 
 <div layout:fragment="content">
-    <div class="container">
-        <table class="table table-borderless">
-            <tbody>
-                <tr><td th:text="${postsDto.title}"></td></tr>
-                <tr><td th:text="${postsDto.writer}"></td></tr>
-                <tr><td th:text="${postsDto.boardType}"></td></tr>
-                <tr><td><textarea type="text" name="content" th:text="${postsDto.content}"></textarea></td>
-            </tbody>
+    <div class="container" style="width: 100%;">
+        <table border="1" style="width: 800px; margin: 0 auto;">
+            <tr>
+                <th colspan="2">
+                    <h4 th:text="${postsDto.title}"></h4>
+                </th>
+            </tr>
+            <tr>
+                <td th:text="${postsDto.writer}"></td>
+                <td th:text="${#temporals.format(postsDto.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <textarea type="text" id="content" class="form-control" name="content" th:text="${postsDto.content}" maxlength="1024"></textarea>
+                </td>
+            </tr>
         </table>
+
+        <script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
+        <script>
+            ClassicEditor
+                .create(document.querySelector('#content'))
+                .then(editor => {
+                    editor.enableReadOnlyMode("content");
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        </script>
+        <script>
+            $(document).ready(function() {
+                CKEDITOR.replace('content', {readOnly:true})
+            });
+        </script>
     </div>
 
-    <div class="card" th:each="comment : ${comments}">
-        <div class="card-header">
-            [[${comment.nickname}]]
-        </div>
-        <div class="card-body">
-            <p class="card-text">[[${comment.comment}]]</p>
+    <br>
+    <br>
+
+    <div class="card-container" style="width: 800px; margin: 0 auto;">
+        <h3 th:text="'댓글 ' + ${count}"></h3>
+        <div class="card" th:each="comment : ${comments}">
+            <div class="card-header">
+                [[${comment.nickname}]]
+            </div>
+            <div class="card-body">
+                <p class="card-text">[[${comment.comment}]]</p>
+            </div>
         </div>
     </div>
 
-    <form id="comment_form" method="post" th:action="@{'/post/' + ${postsDto.id} + '/write'}">
+    <br>
+
+    <form id="comment_form" method="post" th:action="@{'/post/' + ${postsDto.id} + '/write'}" style="width: 800px; margin: 0 auto;">
         <textarea class="form-control" style="height:100%; width:100%;" maxlength='1000' id="comment" name="comment"></textarea>
         <button type="submit" id="submitBtn" class="btn btn-outline-primary mr-2">Write</button>
     </form>

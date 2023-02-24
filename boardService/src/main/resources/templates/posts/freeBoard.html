@@ -195,6 +195,17 @@
     </div>
   </div>
 
+  <div class="col-auto">
+    <a class="btn btn-primary"
+       th:href="@{/posts/free/(orderby=view)}">조회수순</a>
+    <a class="btn btn-primary"
+       th:href="@{/posts/free/(orderby=likes)}">좋아요순</a>
+    <a class="btn btn-primary"
+       th:href="@{/posts/free/(orderby=id)}">최신순</a>
+  </div>
+
+  <br>
+
   <div id="board-search">
     <div class="container">
       <div class="search-window">
@@ -234,7 +245,7 @@
     </div>
   </div>
 
-  <nav aria-label="Page navigation example" style="text-align: center;">
+  <nav aria-label="Page navigation example" style="text-align: center; margin-top: 50px;">
     <ul class="pagination justify-content-center" th:with="start=${T(java.lang.Math).floor(boardList.number / 10) * 10 + 1},
                     last=(${start + 9 < boardList.totalPages ? start + 9 : boardList.totalPages})">
       <li class="page-item">
