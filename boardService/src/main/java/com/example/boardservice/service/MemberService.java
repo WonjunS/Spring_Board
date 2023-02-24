@@ -89,6 +89,7 @@ public class MemberService {
 
         for(Member member : members) {
             MemberResponseDto memberResponseDto = new MemberResponseDto(member);
+            if(memberResponseDto.getRole().equals(Role.ADMIN)) continue;
             memberList.add(memberResponseDto);
         }
 
