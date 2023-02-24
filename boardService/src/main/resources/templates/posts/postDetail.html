@@ -20,15 +20,7 @@
 
 <div layout:fragment="content">
     <div class="container" style="width: 100%;">
-<!--        <table class="table table-borderless">-->
-<!--            <tbody>-->
-<!--                <tr><td th:text="${postsDto.title}"></td></tr>-->
-<!--                <tr><td th:text="${postsDto.writer}"></td></tr>-->
-<!--                <tr><td th:text="${postsDto.boardType}"></td></tr>-->
-<!--                <tr><td><div th:text="${postsDto.content}"></div></td></tr>-->
-<!--            </tbody>-->
-<!--        </table>-->
-        <table border="1" width=500 style="margin: 0 auto;">
+        <table border="1" style="width: 800px; margin: 0 auto;">
             <tr>
                 <th colspan="2">
                     <h4 th:text="${postsDto.title}"></h4>
@@ -36,11 +28,11 @@
             </tr>
             <tr>
                 <td th:text="${postsDto.writer}"></td>
-                <td th:text="${postsDto.createdAt}"></td>
+                <td th:text="${#temporals.format(postsDto.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <textarea type="text" id="content" class="form-control" name="content" th:text="${postsDto.content}" maxlength="1024" readonly></textarea>
+                    <textarea type="text" id="content" class="form-control" name="content" th:text="${postsDto.content}" maxlength="1024"></textarea>
                 </td>
             </tr>
         </table>
@@ -64,8 +56,10 @@
     </div>
 
     <br>
+    <br>
 
-    <div class="card-container" style="width: 100%">
+    <div class="card-container" style="width: 800px; margin: 0 auto;">
+        <h3 th:text="'댓글 ' + ${count}"></h3>
         <div class="card" th:each="comment : ${comments}">
             <div class="card-header">
                 [[${comment.nickname}]]
@@ -76,7 +70,9 @@
         </div>
     </div>
 
-    <form id="comment_form" method="post" th:action="@{'/post/' + ${postsDto.id} + '/write'}">
+    <br>
+
+    <form id="comment_form" method="post" th:action="@{'/post/' + ${postsDto.id} + '/write'}" style="width: 800px; margin: 0 auto;">
         <textarea class="form-control" style="height:100%; width:100%;" maxlength='1000' id="comment" name="comment"></textarea>
         <button type="submit" id="submitBtn" class="btn btn-outline-primary mr-2">Write</button>
     </form>
