@@ -4,30 +4,30 @@
       layout:decorate="~{layouts/mainLayout}">
 
 <th:block layout:fragment="css">
-
+  <style>
+    a {
+      color: black;
+    }
+  </style>
 </th:block>
 
 <th:block layout:fragment="script">
-  <script th:inline="javascript">
-    $(document).ready(function(){
-      var errorMessage = [[${errorMessage}]];
-      if(errorMessage != null){
-        alert(errorMessage);
-      }
-    });
-  </script>
 </th:block>
 
 <div layout:fragment="content">
-  <h1>회원 탈퇴</h1>
+  <h2>회원 탈퇴</h2>
   <hr>
   <form method="post" th:action="@{'/member/' + ${memberDto.id} + '/delete'}">
+    <p>회원 탈퇴하기 버튼을 누르면 다시 되돌릴수 없습니다.</p>
+    <p>탈퇴 하시겠습니까?</p>
+    <br>
+    <br>
     <input type="hidden" id="nickname" name="nickname" th:value="${memberDto.nickname}">
     <input type="hidden" id="email" name="email" th:value="${memberDto.email}">
     <input type="hidden" name="_method" value="DELETE">
 
-    <button id="exit" type="submit" class="btn btn-primary">탈퇴하기</button>
-    <button id="cancel" type="button" class="btn btn-primary"><a href="/member/update">취소하기</a></button>
+    <button id="exit" type="submit" class="btn btn-danger">탈퇴하기</button>
+    <a href="/member/info" class="btn btn-success">취소하기</a>
   </form>
 </div>
 </html>
