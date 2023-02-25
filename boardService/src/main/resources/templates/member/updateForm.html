@@ -5,6 +5,10 @@
 
 <th:block layout:fragment="css">
   <style>
+    a {
+      color: black;
+    }
+
     .id_ok{
       color:#008000;
       display: none;
@@ -27,47 +31,47 @@
     });
   </script>
   <script>
-    // $(function() {
-    //   $("#join").click(function() {
-    //     var nickname = $("#nickname").val();
-    //     var email = $("#email").val();
-    //
-    //     if(nickname === '') {
-    //       alert("닉네임을 입력해주세요.");
-    //       return false;
-    //     }
-    //
-    //     $.ajax({
-    //       url: "/member/update",
-    //       type: "POST",
-    //       data: {"nickname": nickname},
-    //       success: function(data){
-    //         var txt = data.nickname + data.email;
-    //         $('#result').text(txt);
-    //       },
-    //       error: function(){
-    //         alert("stringify err");
-    //       }
-    //     });
-    //   });
-    // });
+    $(function() {
+      $("#nicknameCheck").click(function() {
+        var nickname = $("#nickname").val();
+
+        $.ajax({
+          url: "/member/nicknameCheck",
+          type: "GET",
+          data: {"nickname": nickname},
+          success: function(data) {
+            if(data === 1) {
+              alert("이미 존재하는 닉네임 입니다.");
+              $("#modify").attr("disabled", true);
+            } else {
+              alert("사용 가능한 닉네임 입니다.");
+              $("#modify").attr("disabled", false);
+            }
+          }
+        });
+      });
+    });
   </script>
 </th:block>
 
 <div layout:fragment="content">
-  <h1>회원 가입</h1>
-  <hr>
-  <form method="post" th:action="@{/member/update}">
-    <div class="form-group">
+  <div class="container" style="width: 50%; margin: 0 auto;">
+    <h2>닉네임 변경</h2>
+    <hr>
+    <form method="post" th:action="@{'/member/' + ${memberDto.id} + '/update'}">
       <label for="nickname">Nickname</label>
-      <input id="nickname" type="text" name="nickname" class="form-control" th:value="${memberDto.nickname}">
-    </div>
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input id="email" type="text" name="email" class="form-control" th:value="${memberDto.email}" readonly>
-    </div>
-    <a th:href="@{'/posts/all/' + ${memberDto.id}}">Test</a>
-    <button id="join" type="submit" class="btn btn-primary">수정하기</button>
-  </form>
+      <div class="form-row">
+        <div class="col-md-6 mb-3">
+          <input id="nickname" type="text" name="nickname" class="form-control" th:value="${memberDto.nickname}">
+        </div>
+        <div class="col-md-6 mb-3">
+          <button id="nicknameCheck" type="button" class="btn btn-primary">중복 체크</button>
+        </div>
+      </div>
+      <input id="email" type="hidden" name="email" class="form-control" th:value="${memberDto.email}" readonly>
+      <br>
+      <button id="modify" type="submit" class="btn btn-primary" disabled>수정하기</button>
+    </form>
+  </div>
 </div>
 </html>
