@@ -26,7 +26,7 @@
       <p class="card-text" th:text="'방문수: ' + ${memberDto.visits}"></p>
     </div>
     <ul class="list-group list-group-flush">
-      <li class="list-group-item"><a th:href="@{'/posts/all/' + ${memberDto.id}}">내가 쓴 글 보기</a></li>
+      <li class="list-group-item"><a th:href="@{/posts/all}">내가 쓴 글 보기</a></li>
       <li class="list-group-item"><a th:href="@{'/member/' + ${memberDto.id} + '/update'}">수정하기</a></li>
       <li class="list-group-item"><a th:href="@{'/member/' + ${memberDto.id} + '/delete'}">탈퇴하기</a></li>
     </ul>
