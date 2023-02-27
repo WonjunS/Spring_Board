@@ -1,6 +1,9 @@
 package com.example.boardservice.service;
 
-import com.example.boardservice.domain.*;
+import com.example.boardservice.domain.BoardType;
+import com.example.boardservice.domain.Likes;
+import com.example.boardservice.domain.Member;
+import com.example.boardservice.domain.Posts;
 import com.example.boardservice.dto.request.PostsRequestDto;
 import com.example.boardservice.dto.response.PostsResponseDto;
 import com.example.boardservice.repository.MemberRepository;
@@ -22,11 +25,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostsService {
 
-    @Autowired
-    private final MemberRepository memberRepository;
-
-    @Autowired
-    private final PostsRepository postsRepository;
+    @Autowired private final MemberRepository memberRepository;
+    @Autowired private final PostsRepository postsRepository;
+    @Autowired private final CommentService commentService;
+    @Autowired private final LikesService likesService;
 
     // 게시글 올리기
     public Long post(PostsRequestDto postsDto, String boardType, String email) throws Exception {
@@ -172,22 +174,44 @@ public class PostsService {
         post.update(postsDto.getTitle(), postsDto.getBoardType(), postsDto.getContent());
     }
 
-    // 게시물 삭제하기
-    @Transactional
-    public void deletePost(Long id) {
-        postsRepository.deleteById(id);
-    }
-
     // 게시물 조회수 업데이트
     @Transactional
-    public int updateView(Long postsId) {
-        return postsRepository.updateView(postsId);
+    public int updateView(Long postId) {
+        return postsRepository.updateView(postId);
+    }
+
+    // 저장된 좋아요가 있는지 조회
+    public int findLike(Long memberId, Long postId) {
+        List<Likes> findLike = likesService.findByMemberAndPosts(memberId, postId);
+
+        if(findLike.isEmpty()) {
+            return 0;
+        }
+
+        return 1;
     }
 
     // 게시물 좋아요 수 업데이트
     @Transactional
-    public int updateLikes(Long postsId) {
-        return postsRepository.updateLikes(postsId);
+    public int updateLikes(Long memberId, Long postId) {
+        List<Likes> findLike = likesService.findByMemberAndPosts(memberId, postId);
+
+        if(findLike.isEmpty()) {
+            likesService.saveLikes(memberId, postId);
+            postsRepository.updateLikes(postId);
+            return 1;
+        } else {
+            likesService.deleteByMemberAndPosts(memberId, postId);
+            return 0;
+        }
+    }
+
+    // 게시물 삭제하기
+    @Transactional
+    public void deletePost(Long id) {
+        likesService.deleteAllByPosts(id);
+        commentService.deleteAllCommentsByPostId(id);
+        postsRepository.deleteById(id);
     }
 
     // 특정 회원이 작성한 모든 게시물 삭제
@@ -195,6 +219,8 @@ public class PostsService {
     public void deleteAllPostsByMemberId(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(EntityNotFoundException::new);
+        likesService.deleteAllByMember(memberId);
+        commentService.deleteAllCommentsByMemberId(member.getId());
         postsRepository.deleteAllByMember(member);
     }
 
