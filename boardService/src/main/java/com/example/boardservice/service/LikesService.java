@@ -21,7 +21,7 @@ public class LikesService {
     @Autowired private final PostsRepository postsRepository;
     @Autowired private final LikesRepository likesRepository;
 
-    public List<Likes> findByMemberAndPosts(Long memberId, Long postId) {
+    public Likes findByMemberAndPosts(Long memberId, Long postId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(EntityNotFoundException::new);
 
@@ -66,6 +66,7 @@ public class LikesService {
                 .orElseThrow(EntityNotFoundException::new);
 
         likesRepository.deleteByMemberAndPosts(member, post);
+        postsRepository.deleteLikes(postId);
     }
 
 }
