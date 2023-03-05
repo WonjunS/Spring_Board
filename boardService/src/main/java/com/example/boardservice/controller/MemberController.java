@@ -87,14 +87,14 @@ public class MemberController {
             memberService.updateMemberNickname(email, nickname);
         } catch(Exception e) {
             System.out.println(e.getMessage());
-            return "redirect:/member/update";
+            return "redirect:/member/{memberId}/update";
         }
         return "redirect:/";
     }
 
     @RequestMapping(value = "/nicknameCheck", method = RequestMethod.GET)
     @ResponseBody
-    public int confirmNickname(@RequestParam("nickname") String nickname) throws Exception {
+    public int checkNickname(@RequestParam("nickname") String nickname) throws Exception {
         boolean result = memberService.isDuplicateNickname(nickname);
 
         if(result) return 1;
