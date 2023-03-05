@@ -182,9 +182,9 @@ public class PostsService {
 
     // 저장된 좋아요가 있는지 조회
     public int findLike(Long memberId, Long postId) {
-        List<Likes> findLike = likesService.findByMemberAndPosts(memberId, postId);
+        Likes findLike = likesService.findByMemberAndPosts(memberId, postId);
 
-        if(findLike.isEmpty()) {
+        if(findLike == null) {
             return 0;
         }
 
@@ -194,9 +194,9 @@ public class PostsService {
     // 게시물 좋아요 수 업데이트
     @Transactional
     public int updateLikes(Long memberId, Long postId) {
-        List<Likes> findLike = likesService.findByMemberAndPosts(memberId, postId);
+        Likes findLike = likesService.findByMemberAndPosts(memberId, postId);
 
-        if(findLike.isEmpty()) {
+        if(findLike == null) {
             likesService.saveLikes(memberId, postId);
             postsRepository.updateLikes(postId);
             return 1;
