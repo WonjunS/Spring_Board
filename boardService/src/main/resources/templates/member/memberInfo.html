@@ -4,6 +4,11 @@
       layout:decorate="~{layouts/mainLayout}">
 
 <th:block layout:fragment="css">
+  <style>
+    a {
+      color: black;
+    }
+  </style>
 </th:block>
 
 <th:block layout:fragment="script">
@@ -11,7 +16,9 @@
 
 <div layout:fragment="content">
   <div class="card" style="width: 36rem; margin: 0 auto">
-    <h1>내 정보</h1>
+    <div id="card-header" style="padding-left: 10px; padding-top: 10px;">
+      <h2>내 정보</h2>
+    </div>
     <hr>
     <div class="card-body">
       <p class="card-text" th:text="'닉네임: ' + ${memberDto.nickname}"></p>
@@ -19,7 +26,7 @@
       <p class="card-text" th:text="'방문수: ' + ${memberDto.visits}"></p>
     </div>
     <ul class="list-group list-group-flush">
-      <li class="list-group-item"><a th:href="@{'/posts/all/' + ${memberDto.id}}">내가 쓴 글 보기</a></li>
+      <li class="list-group-item"><a th:href="@{/posts/all}">내가 쓴 글 보기</a></li>
       <li class="list-group-item"><a th:href="@{'/member/' + ${memberDto.id} + '/update'}">수정하기</a></li>
       <li class="list-group-item"><a th:href="@{'/member/' + ${memberDto.id} + '/delete'}">탈퇴하기</a></li>
     </ul>

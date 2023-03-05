@@ -16,9 +16,14 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.io.File;
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -50,6 +55,37 @@ public class PostsController {
         return "posts/postWrite";
     }
 
+    // 이미지 업로드
+    @PostMapping("/image/upload")
+    public ModelAndView image(MultipartHttpServletRequest request) throws Exception {
+        ModelAndView mav = new ModelAndView("jsonView");
+
+        MultipartFile uploadFile = request.getFile("upload");
+
+        // 파일의 기존 이름
+        String originalFileName = uploadFile.getOriginalFilename();
+
+        // 파일의 확장자
+        String ext = originalFileName.substring(originalFileName.indexOf("."));
+
+        String newFileName = UUID.randomUUID() + ext;
+
+        String realPath = request.getServletContext().getRealPath("/");
+
+        String savePath = realPath + "upload/" + newFileName;
+
+        String uploadPath = "./upload/" + newFileName;
+
+        File file = new File(savePath);
+
+        uploadFile.transferTo(file);
+
+        mav.addObject("uploaded", true);
+        mav.addObject("url", uploadPath);
+
+        return mav;
+    }
+
     // 작성된 게시물 저장
     @PostMapping("/post/write")
     public String insertData(@RequestParam("title") String title, @RequestParam("boardType") String boardType,
@@ -66,6 +102,7 @@ public class PostsController {
         return "redirect:/posts";
     }
 
+    // 게시물 검색하기
     @GetMapping("/posts/search")
     public String search(@RequestParam("keyword") String keyword, Pageable pageable, Model model) {
         Page<PostsResponseDto> posts = postsService.searchPosts(keyword, pageable);
@@ -75,9 +112,9 @@ public class PostsController {
     }
 
     // 특정 게시물 불러오기
-    @GetMapping("/post/read/{postsId}")
-    public String getPost(@PathVariable("postsId") Long postsId, Model model) {
-        PostsResponseDto postsDto = postsService.getPost(postsId);
+    @GetMapping("/post/read/{postId}")
+    public String getPost(@PathVariable("postId") Long postId, Model model, Principal principal) {
+        PostsResponseDto postsDto = postsService.getPost(postId);
         List<CommentResponseDto> comments = postsDto.getComments();
 
         int count = (comments == null) ? 0 : comments.size();
@@ -88,19 +125,36 @@ public class PostsController {
 
         model.addAttribute("count", count);
         model.addAttribute("postsDto", postsDto);
-        postsService.updateView(postsId);
+        postsService.updateView(postId);
+
+        Long memberId = memberService.findMember(principal.getName()).getId();
+
+        System.out.println(postId + " " + memberId);
+        int like = postsService.findLike(memberId, postId);
+        System.out.println("like = " + like);
+        model.addAttribute("like", like);
 
         return "posts/postDetail";
     }
 
+    // 좋아요수 업데이트
+    @PostMapping("/post/like")
+    @ResponseBody
+    public int updateLikes(Long postId, Long memberId) {
+        int status = postsService.updateLikes(memberId, postId);
+        System.out.println("Update: " + status);
+        return status;
+    }
+
     // 특정 회원이 작성한 게시물만 불러오기
-    @GetMapping("/posts/all/{memberId}")
-    public String getPostByMember(@PathVariable("memberId") Long memberId, Model model, Principal principal,
+    @GetMapping("/posts/all")
+    public String getPostByMember(Model model, Principal principal,
                                   @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         model.addAttribute("boardList", postsService.getAllPostsByWriter(principal.getName(), pageable));
         return "posts/memberBoard";
     }
 
+    // 자유게시판에 있는 게시글 가져오기
     @GetMapping("/posts/free")
     public String getFreeBoard(@RequestParam(required = false, defaultValue = "id", value = "orderby") String orderCriteria,
                                Model model, Pageable pageable) {
@@ -108,6 +162,7 @@ public class PostsController {
         return "posts/freeBoard";
     }
 
+    // 질문 게시판에 있는 게시글 가져오기
     @GetMapping("/posts/question")
     public String getQuestionBoard(@RequestParam(required = false, defaultValue = "id", value = "orderby") String orderCriteria,
                                    Model model, Pageable pageable) {
@@ -115,6 +170,7 @@ public class PostsController {
         return "posts/questionBoard";
     }
 
+    // 공지 게시판에 있는 게시글 가져오기
     @GetMapping("/posts/notice")
     public String getNoticeBoard(@RequestParam(required = false, defaultValue = "id", value = "orderby") String orderCriteria,
                                  Model model, Pageable pageable) {

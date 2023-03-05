@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{layouts/mainLayout}">
+
+<head>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <meta name="_csrf" th:content="${_csrf.token}">
+</head>
 
 <th:block layout:fragment="css">
     <style>
@@ -16,10 +22,91 @@
 </th:block>
 
 <th:block layout:fragment="script">
+    <script>
+        $(function() {
+            var likeUrl = "/img/like_fill.png";
+            var emptyUrl = "/img/like_empty.png";
+
+            let likeVal = $("#likeVal").val();
+            const likeImg = $("#likeImg");
+
+            if(likeVal === 1 || likeVal === '1') {
+                $('#likeImg').attr("src", likeUrl);
+            } else if(likeVal === 0 || likeVal === '0') {
+                $('#likeImg').attr("src", emptyUrl);
+            }
+        });
+    </script>
+    <script>
+        var likeUrl = "/img/like_fill.png";
+        var emptyUrl = "/img/like_empty.png";
+
+        $(function() {
+            $("#likeImg").click(function() {
+                var header = $("meta[name='_csrf_header']").attr('content');
+                var token = $("meta[name='_csrf']").attr('content');
+
+                var likeVal = $("#likeVal").val();
+                const postId = $("#postId").val();
+                const memberId = $("#memberId").val();
+
+                if(likeVal === 1 || likeVal === '1') {
+                    $.ajax({
+                        type: "POST",
+                        url: "/post/like",
+                        data: {"postId" : postId, "memberId" : memberId},
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader(header, token);
+                        }
+                    }).done(function(){
+                        $("#likeImg").attr("src", emptyUrl);
+                        location.reload();
+                    }).fail(function (error) {
+                        alert(JSON.stringify(error));
+                    });
+                } else if(likeVal === 0 || likeVal === '0') {
+                    // $.ajax({
+                    //     type: "POST",
+                    //     url: "/post/like",
+                    //     data: {"postId" : postId, "memberId" : memberId},
+                    //     beforeSend: function(xhr) {
+                    //         xhr.setRequestHeader(header, token);
+                    //     },
+                    //     success: function (data) {
+                    //         $("#likeImg").attr("src", likeUrl);
+                    //     }, error: function () {
+                    //         // $("#likeImg").attr("src", "/assets/img/like_click.png");
+                    //         console.log('Error')
+                    //     }
+                    // });
+                    $.ajax({
+                        type: "POST",
+                        url: "/post/like",
+                        data: {"postId" : postId, "memberId" : memberId},
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader(header, token);
+                        }
+                    }).done(function(){
+                        $("#likeImg").attr("src", likeUrl);
+                        location.reload();
+                    }).fail(function (error) {
+                        alert(JSON.stringify(error));
+                    });
+                }
+            });
+        });
+    </script>
 </th:block>
 
 <div layout:fragment="content">
-    <div class="container" style="width: 100%;">
+    <div class="container" style="width: 100%">
+        <button id="likeBtn" class="btn">좋아요</button>
+
+        <div sec:authorize="isAuthenticated()" class="d-block">
+            <input type="hidden" id="likeVal" name="likeVal" th:value="${like}">
+            <img id="likeImg" src="/img/like_empty.png" alt="" width="30px" height="30px">
+        </div>
+
         <table border="1" style="width: 800px; margin: 0 auto;">
             <tr>
                 <th colspan="2">
@@ -32,10 +119,13 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <textarea type="text" id="content" class="form-control" name="content" th:text="${postsDto.content}" maxlength="1024"></textarea>
+                    <textarea type="text" id="content" class="form-control" name="content" th:text="${postsDto.content}"></textarea>
                 </td>
             </tr>
         </table>
+
+        <input type="hidden" id="memberId" name="memberId" th:value="${postsDto.memberId}">
+        <input type="hidden" id="postId" name="postId" th:value="${postsDto.id}">
 
         <script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
         <script>
@@ -59,7 +149,9 @@
     <br>
 
     <div class="card-container" style="width: 800px; margin: 0 auto;">
-        <h3 th:text="'댓글 ' + ${count}"></h3>
+        <div id="card-title" style="width: 100%;">
+            <h4 th:text="'댓글 ' + ${count}"></h4>
+        </div>
         <div class="card" th:each="comment : ${comments}">
             <div class="card-header">
                 [[${comment.nickname}]]
@@ -71,9 +163,10 @@
     </div>
 
     <br>
+    <br>
 
     <form id="comment_form" method="post" th:action="@{'/post/' + ${postsDto.id} + '/write'}" style="width: 800px; margin: 0 auto;">
-        <textarea class="form-control" style="height:100%; width:100%;" maxlength='1000' id="comment" name="comment"></textarea>
+        <textarea class="form-control" style="height:100px; width:100%;" maxlength='1000' id="comment" name="comment" placeholder="댓글을 입력해주세요."></textarea>
         <button type="submit" id="submitBtn" class="btn btn-outline-primary mr-2">Write</button>
     </form>
 </div>
