@@ -3,6 +3,7 @@ package com.example.boardservice.repository;
 import com.example.boardservice.domain.BoardType;
 import com.example.boardservice.domain.Member;
 import com.example.boardservice.domain.Posts;
+import com.querydsl.core.annotations.QueryInit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,6 +26,11 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
     @Modifying
     @Query("update Posts p set p.likes = p.likes + 1 where p.id = :id")
     int updateLikes(Long id);
+
+    @Transactional
+    @Modifying
+    @Query("update Posts p set p.likes = p.likes - 1 where p.id = :id")
+    int deleteLikes(Long id);
 
     @Transactional
     @Query("select p from Posts p where p.boardType = :boardType")
