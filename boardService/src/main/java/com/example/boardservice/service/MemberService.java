@@ -1,6 +1,7 @@
 package com.example.boardservice.service;
 
 import com.example.boardservice.domain.Member;
+import com.example.boardservice.domain.MemberGrade;
 import com.example.boardservice.domain.Role;
 import com.example.boardservice.dto.request.MemberRequestDto;
 import com.example.boardservice.dto.response.MemberResponseDto;
@@ -19,14 +20,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberService {
 
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private PostsService postsService;
-
-    @Autowired
-    private CommentService commentService;
+    @Autowired private MemberRepository memberRepository;
+    @Autowired private PostsService postsService;
+    @Autowired private CommentService commentService;
+    @Autowired private LikesService likesService;
 
     // 회원 정보 저장
     @Transactional
@@ -37,6 +34,7 @@ public class MemberService {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
         memberDto.setRole(Role.USER);
+        memberDto.setGrade(MemberGrade.BRONZE);
 
         memberRepository.save(memberDto.toEntity());
     }
@@ -82,6 +80,37 @@ public class MemberService {
         return memberRepository.updateVisits(id);
     }
 
+    // 활동점수 업데이트
+    // 사이트 방문시 1점
+    // 게시글 작성시 10점
+    // 댓글 작성시 5점
+    // TODO:
+    // 신고 당한 경우 최소 -5점
+    // 허위 신고할 경우 -10점
+    public int updateActivityScore(String email, int score) {
+        Member member = memberRepository.findByEmail(email);
+        if(member != null) {
+            memberRepository.updateActivityScore(member.getId(), score);
+            return updateMemberGrade(member.getId());
+        }
+        return -1;
+    }
+
+    // 회원 등급 업데이트 (특정 조건 만족시)
+    public int updateMemberGrade(Long id) {
+        Member findMember = memberRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
+
+        int currentScore = findMember.getActivityScore();
+
+        // 활동점수 50점 이상이면 SILVER 등급으로 승급
+        if(currentScore >= 50) {
+            return memberRepository.updateMemberGrade(id, MemberGrade.SILVER);
+        }
+
+        return -1;
+    }
+
     // 전체 회원 리스트 조회
     public List<MemberResponseDto> findAllMembers() {
         List<Member> members = memberRepository.findAll();
@@ -107,6 +136,7 @@ public class MemberService {
     public void deleteMember(String email, String nickname) {
         Long memberId = memberRepository.findByEmail(email).getId();
 
+        likesService.deleteAllByMember(memberId);
         commentService.deleteAllCommentsByMemberId(memberId);
         postsService.deleteAllPostsByMemberId(memberId);
         memberRepository.deleteById(memberId);
