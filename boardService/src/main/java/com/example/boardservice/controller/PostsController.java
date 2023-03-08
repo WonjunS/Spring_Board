@@ -99,6 +99,8 @@ public class PostsController {
                 .build();
         postsService.post(postsDto, boardType, principal.getName());
 
+        memberService.updateActivityScore(principal.getName(), 10);
+
         return "redirect:/posts";
     }
 
