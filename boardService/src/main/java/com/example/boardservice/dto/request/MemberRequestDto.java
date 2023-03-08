@@ -1,6 +1,7 @@
 package com.example.boardservice.dto.request;
 
 import com.example.boardservice.domain.Member;
+import com.example.boardservice.domain.MemberGrade;
 import com.example.boardservice.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +29,9 @@ public class MemberRequestDto {
     private String email;
 
     private Role role;
+
+    private MemberGrade grade;
+
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -39,7 +43,9 @@ public class MemberRequestDto {
                 .password(password)
                 .email(email)
                 .visits(0)
+                .activityScore(0)
                 .role(role)
+                .memberGrade(grade)
                 .build();
 
         return member;
