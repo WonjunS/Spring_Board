@@ -219,8 +219,14 @@ public class PostsService {
     public void deleteAllPostsByMemberId(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(EntityNotFoundException::new);
+
+        // Likes 테이블에 있는 모든 데이터 삭제
         likesService.deleteAllByMember(memberId);
-        commentService.deleteAllCommentsByMemberId(member.getId());
+
+        // Comment 테이블에 있는 모든 데이터 삭제
+        commentService.deleteAllCommentsByMemberId(memberId);
+
+        // Posts 테이블에 있는 모든 데이터 삭제
         postsRepository.deleteAllByMember(member);
     }
 
