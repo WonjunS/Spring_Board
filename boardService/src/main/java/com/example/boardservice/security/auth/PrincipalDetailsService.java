@@ -24,7 +24,11 @@ public class PrincipalDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Could not find user");
         }
 
+        // 방문수 업데이트
         memberService.updateVisits(member.getId());
+
+        // 활동 점수 업데이트
+        memberService.updateActivityScore(username, 1);
 
         return User.builder()
                 .username(member.getEmail())
