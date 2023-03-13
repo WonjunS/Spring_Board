@@ -109,7 +109,7 @@
                 </th>
             </tr>
             <tr>
-                <td th:text="${postsDto.writer}"></td>
+                <td><a th:text="${postsDto.writer}" th:href="@{'/member/' + ${postsDto.memberId}}"></a></td>
                 <td th:text="${#temporals.format(postsDto.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
             </tr>
             <tr>
@@ -149,10 +149,10 @@
         </div>
         <div class="card" th:each="comment : ${comments}">
             <div class="card-header">
-                [[${comment.nickname}]]
+                <a th:text="${comment.nickname}" th:href="@{'/member/' + ${comment.memberId}}"></a>
             </div>
             <div class="card-body">
-                <p class="card-text">[[${comment.comment}]]</p>
+                <p class="card-text" th:text="${comment.comment}"></p>
             </div>
         </div>
     </div>
