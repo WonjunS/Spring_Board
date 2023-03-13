@@ -39,6 +39,10 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
     Page<Posts> findByTitleContaining(String keyword, Pageable pageable);
 
     @Transactional
+    @Query("select p from Posts p where p.member = :member order by p.id desc")
+    List<Posts> getAllByMemberAndOrderByIdDesc(Member member);
+
+    @Transactional
     @Query("select p from Posts p where p.boardType = :boardType order by p.id desc")
     List<Posts> getAllByBoardType(BoardType boardType);
 
