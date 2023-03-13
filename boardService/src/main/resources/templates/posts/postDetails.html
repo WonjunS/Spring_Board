@@ -24,16 +24,12 @@
 <th:block layout:fragment="script">
     <script>
         $(function() {
-            var likeUrl = "/img/like_fill.png";
-            var emptyUrl = "/img/like_empty.png";
-
             let likeVal = $("#likeVal").val();
-            const likeImg = $("#likeImg");
 
             if(likeVal === 1 || likeVal === '1') {
-                $('#likeImg').attr("src", likeUrl);
+                $('#likeBtn').attr("class", "btn btn-danger");
             } else if(likeVal === 0 || likeVal === '0') {
-                $('#likeImg').attr("src", emptyUrl);
+                $('#likeBtn').attr("class", "btn btn-light");
             }
         });
     </script>
@@ -42,7 +38,7 @@
         var emptyUrl = "/img/like_empty.png";
 
         $(function() {
-            $("#likeImg").click(function() {
+            $("#likeBtn").click(function() {
                 var header = $("meta[name='_csrf_header']").attr('content');
                 var token = $("meta[name='_csrf']").attr('content');
 
@@ -59,7 +55,7 @@
                             xhr.setRequestHeader(header, token);
                         }
                     }).done(function(){
-                        $("#likeImg").attr("src", emptyUrl);
+                        $("#likeBtn").attr("class", "btn btn-light");
                         location.reload();
                     }).fail(function (error) {
                         alert(JSON.stringify(error));
@@ -87,7 +83,7 @@
                             xhr.setRequestHeader(header, token);
                         }
                     }).done(function(){
-                        $("#likeImg").attr("src", likeUrl);
+                        $("#likeBtn").attr("class", "btn btn-danger");
                         location.reload();
                     }).fail(function (error) {
                         alert(JSON.stringify(error));
@@ -100,17 +96,16 @@
 
 <div layout:fragment="content">
     <div class="container" style="width: 100%">
-        <button id="likeBtn" class="btn">좋아요</button>
-
-        <div sec:authorize="isAuthenticated()" class="d-block">
-            <input type="hidden" id="likeVal" name="likeVal" th:value="${like}">
-            <img id="likeImg" src="/img/like_empty.png" alt="" width="30px" height="30px">
-        </div>
-
         <table border="1" style="width: 800px; margin: 0 auto;">
             <tr>
-                <th colspan="2">
+                <th>
                     <h4 th:text="${postsDto.title}"></h4>
+                </th>
+                <th>
+                    <div sec:authorize="isAuthenticated()" class="d-block">
+                        <input type="hidden" id="likeVal" name="likeVal" th:value="${like}">
+                        <button type="button" id="likeBtn" class="btn btn-light">좋아요</button>
+                    </div>
                 </th>
             </tr>
             <tr>
