@@ -84,9 +84,6 @@ public class MemberService {
     // 사이트 방문시 1점
     // 게시글 작성시 10점
     // 댓글 작성시 5점
-    // TODO:
-    // 신고 당한 경우 최소 -5점
-    // 허위 신고할 경우 -10점
     public int updateActivityScore(String email, int score) {
         Member member = memberRepository.findByEmail(email);
         if(member != null) {
@@ -107,8 +104,17 @@ public class MemberService {
         if(currentScore >= 50) {
             return memberRepository.updateMemberGrade(id, MemberGrade.SILVER);
         }
+        if(currentScore >= 250) {
+            return memberRepository.updateMemberGrade(id, MemberGrade.GOLD);
+        }
+        if(currentScore >= 500) {
+            return memberRepository.updateMemberGrade(id, MemberGrade.PLATINUM);
+        }
+        if(currentScore >= 1000) {
+            return memberRepository.updateMemberGrade(id, MemberGrade.DIAMOND);
+        }
 
-        return -1;
+        return memberRepository.updateMemberGrade(id, MemberGrade.BRONZE);
     }
 
     // 전체 회원 리스트 조회
@@ -121,7 +127,6 @@ public class MemberService {
             if(memberResponseDto.getRole().equals(Role.ADMIN)) continue;
             memberList.add(memberResponseDto);
         }
-
         return memberList;
     }
 
