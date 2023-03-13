@@ -230,14 +230,14 @@
           <th style="width: 10%">조회수</th>
         </tr>
         </thead>
-        <tbody th:each="post, status: ${boardList.getContent()}">
+        <tbody th:each="post : ${boardList}">
         <tr>
-          <td>[[${post.id}]]</td>
-          <td class="text-left" sec:authorize="isAnonymous()"><a class="readBtn" role="button" th:href="@{/member/login}">[[${post.title}]]</a></td>
-          <td class="text-left" sec:authorize="isAuthenticated()"><a th:href="@{/post/read/{id}(id = ${post.id})}">[[${post.title}]]</a></td>
-          <td>[[${post.writer}]]</td>
-          <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
-          <td>[[${post.view}]]</td>
+          <td th:text="${post.id}"></td>
+          <td sec:authorize="isAnonymous()" class="text-left"><a class="readBtn" role="button" th:href="@{/member/login}" th:text="${post.title} + ' [' + ${post.getComments().size()} + ']'"></a></td>
+          <td sec:authorize="isAuthenticated()" class="text-left"><a th:href="@{/post/read/{id}(id = ${post.id})}" th:text="${post.title} + ' [' + ${post.getComments().size()} + ']'"></a></td>
+          <td th:text="${post.writer}"></td>
+          <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+          <td th:text="${post.view}"></td>
         </tr>
         </tbody>
       </table>
