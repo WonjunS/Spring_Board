@@ -14,7 +14,6 @@
         a {
             color: black;
         }
-
         .ck.ck-editor__top {
             display: none;
         }
@@ -23,7 +22,7 @@
 
 <th:block layout:fragment="script">
     <script>
-        $(function() {
+        $(document).ready(function() {
             let likeVal = $("#likeVal").val();
 
             if(likeVal === 1 || likeVal === '1') {
@@ -34,9 +33,6 @@
         });
     </script>
     <script>
-        var likeUrl = "/img/like_fill.png";
-        var emptyUrl = "/img/like_empty.png";
-
         $(function() {
             $("#likeBtn").click(function() {
                 var header = $("meta[name='_csrf_header']").attr('content');
@@ -61,20 +57,6 @@
                         alert(JSON.stringify(error));
                     });
                 } else if(likeVal === 0 || likeVal === '0') {
-                    // $.ajax({
-                    //     type: "POST",
-                    //     url: "/post/like",
-                    //     data: {"postId" : postId, "memberId" : memberId},
-                    //     beforeSend: function(xhr) {
-                    //         xhr.setRequestHeader(header, token);
-                    //     },
-                    //     success: function (data) {
-                    //         $("#likeImg").attr("src", likeUrl);
-                    //     }, error: function () {
-                    //         // $("#likeImg").attr("src", "/assets/img/like_click.png");
-                    //         console.log('Error')
-                    //     }
-                    // });
                     $.ajax({
                         type: "POST",
                         url: "/post/like",
@@ -119,7 +101,7 @@
             </tr>
         </table>
 
-        <input type="hidden" id="memberId" name="memberId" th:value="${postsDto.memberId}">
+        <input type="hidden" id="memberId" name="memberId" th:value="${memberId}">
         <input type="hidden" id="postId" name="postId" th:value="${postsDto.id}">
 
         <script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
