@@ -1,8 +1,12 @@
-# boardService
+# BoardService
 
 ## 프로젝트 설명
-Java와 Spring Boot를 기반으로 제작한 프로젝트 입니다.
-CRUD를 포함한 게시판의 기본적인 기능을 제공하는 서비스 입니다.
+Java와 Spring Boot를 기반으로 제작한 프로젝트 입니다.  
+
+
+CRUD를 포함한 게시판의 기본적인 기능을 제공하는 서비스 입니다.  
+
+
 프로젝트 제작 기간: 2023/02/15 ~ 2023/03/15
 
 ## ERD
@@ -32,6 +36,7 @@ CRUD를 포함한 게시판의 기본적인 기능을 제공하는 서비스 입
 
 **ENVIRONMENT/TOOL**
 - IntelliJ IDEA
+- Gradle
 - Window 10
 - GitHub
 
@@ -48,6 +53,6 @@ CRUD를 포함한 게시판의 기본적인 기능을 제공하는 서비스 입
 댓글 작성/수정/삭제  
 
 
-관리자 모드
+게시판 관리자 모드
 
 ## Troubleshooting
