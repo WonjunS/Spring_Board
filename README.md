@@ -1,9 +1,14 @@
 # boardService
 
 ## 프로젝트 설명
+Java와 Spring Boot를 기반으로 제작한 프로젝트 입니다.
+CRUD를 포함한 게시판의 기본적인 기능을 제공하는 서비스 입니다.
 프로젝트 제작 기간: 2023/02/15 ~ 2023/03/15
 
 ## ERD
+![image](https://user-images.githubusercontent.com/93713151/225629286-0cde2ad0-1d86-4513-9181-f8a9baba80a3.png)  
+
+
 
 
 ## 사용 기술
@@ -34,7 +39,7 @@
 로그인 및 회원가입  
 
 
-게시글 작성/수정/삭제 (ckeditor5)  
+게시글 작성/수정/삭제 (ckeditor5 기반)  
 
 
 게시글 좋아요  
