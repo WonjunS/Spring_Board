@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -44,18 +43,6 @@ public class LikesService {
                 .build();
 
         likesRepository.save(like);
-    }
-
-    public void deleteAllByMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(EntityNotFoundException::new);
-        likesRepository.deleteAllByMember(member);
-    }
-
-    public void deleteAllByPosts(Long postId) {
-        Posts post = postsRepository.findById(postId)
-                .orElseThrow(EntityNotFoundException::new);
-        likesRepository.deleteAllByPosts(post);
     }
 
     public void deleteByMemberAndPosts(Long memberId, Long postId) {

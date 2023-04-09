@@ -225,25 +225,9 @@ public class PostsService {
     // 게시물 삭제하기
     @Transactional
     public void deletePost(Long id) {
-        likesService.deleteAllByPosts(id);
-        commentService.deleteAllCommentsByPostId(id);
-        postsRepository.deleteById(id);
-    }
-
-    // 특정 회원이 작성한 모든 게시물 삭제
-    @Transactional
-    public void deleteAllPostsByMemberId(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(EntityNotFoundException::new);
-
-        // Likes 테이블에 있는 모든 데이터 삭제
-        likesService.deleteAllByMember(memberId);
-
-        // Comment 테이블에 있는 모든 데이터 삭제
-        commentService.deleteAllCommentsByMemberId(memberId);
-
-        // Posts 테이블에 있는 모든 데이터 삭제
-        postsRepository.deleteAllByMember(member);
+        Posts post = postsRepository.findById(id)
+                        .orElseThrow(EntityNotFoundException::new);
+        postsRepository.delete(post);
     }
 
 }
