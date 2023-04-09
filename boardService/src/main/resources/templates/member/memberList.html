@@ -5,7 +5,9 @@
 
 <th:block layout:fragment="css">
   <style>
-
+    a {
+      color: black;
+    }
   </style>
 </th:block>
 
@@ -21,9 +23,10 @@
   <table class="table table-striped">
     <thead class="thead-dark">
     <tr>
-      <th scope="col">회원명</th>
+      <th scope="col">회원 아이디</th>
+      <th scope="col">회원 닉네임</th>
       <th scope="col">회원 이메일</th>
-      <th scope="col">전화번호</th>
+      <th scope="col">회원 방문수</th>
     </tr>
     </thead>
     <tbody>
@@ -31,6 +34,7 @@
       <td th:text="${member.id}"></td>
       <td th:text="${member.nickname}"></td>
       <td th:text="${member.email}"></td>
+      <td th:text="${member.visits}"></td>
     </tr>
     </tbody>
   </table>
