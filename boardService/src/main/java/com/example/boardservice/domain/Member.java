@@ -38,10 +38,8 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private MemberGrade memberGrade;
 
-    public void modify(String nickname, String password) {
-        this.nickname = nickname;
-        this.password = password;
-    }
+    private String provider;
+    private String providerId;
 
     public Member updateModifiedDate() {
         this.onPreUpdate();
