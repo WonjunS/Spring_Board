@@ -1,77 +1,53 @@
 package com.example.boardservice.security.auth;
 
 import com.example.boardservice.domain.Member;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 @Getter
 @ToString
-public class PrincipalDetails implements UserDetails {
+@AllArgsConstructor
+public class PrincipalDetails implements UserDetails, OAuth2User {
 
-    private Member member;
+    private static final long serialVersionUID = 1L;
+    private Map<String, Object> attributes;
+    private final Member member;
 
     public PrincipalDetails(Member member) {
         this.member = member;
     }
 
-    /**
-     * UserDetails 구현
-     * 해당 유저의 권한목록 리턴
-     */
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        Collection<GrantedAuthority> collect = new ArrayList<>();
-        collect.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return member.getRole().toString();
-            }
-        });
-        return collect;
+    public PrincipalDetails(Member member, Map<String, Object> attributes) {
+        this.member = member;
+        this.attributes = attributes;
     }
 
-
-    /**
-     * UserDetails 구현
-     * 비밀번호를 리턴
-     */
     @Override
-    public String getPassword() {
-        return member.getPassword();
-    }
+    public String getPassword() { return member.getPassword(); }
 
-
-    /**
-     * UserDetails 구현
-     * PK값을 반환해준다
-     */
     @Override
     public String getUsername() {
         return member.getEmail();
     }
 
-
-    /**
-     * UserDetails 구현
-     * 계정 만료 여부
-     *  true : 만료안됨
-     *  false : 만료됨
+    /* 계정 만료 여부
+     *  true : 만료 안됨
+     *  false : 만료
      */
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
-
-    /**
-     * UserDetails 구현
-     * 계정 잠김 여부
+    /* 계정 잠김 여부
      *  true : 잠기지 않음
      *  false : 잠김
      */
@@ -80,28 +56,42 @@ public class PrincipalDetails implements UserDetails {
         return true;
     }
 
-
-    /**
-     * UserDetails 구현
-     * 계정 비밀번호 만료 여부
+    /* 비밀번호 만료 여부
      *  true : 만료 안됨
-     *  false : 만료됨
+     *  false : 만료
      */
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-
-    /**
-     * UserDetails 구현
-     * 계정 활성화 여부
-     *  true : 활성화됨
-     *  false : 활성화 안됨
+    /* 사용자 활성화 여부
+     *  true : 만료 안됨
+     *  false : 만료
      */
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    /* 유저의 권한 목록 */
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> collectors = new ArrayList<>();
+
+        collectors.add(() -> "ROLE_" + member.getRole());
+
+        return collectors;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    @Override
+    public String getName() {
+        return member.getId() + "";
     }
 
 }

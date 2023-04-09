@@ -47,7 +47,6 @@ class PostsServiceTest {
         MemberResponseDto savedMember = memberService.findMember("abcd@gmail.com");
         PostsRequestDto postsDto = PostsRequestDto.builder()
                 .id(1L)
-                .boardType(BoardType.FREE)
                 .title("No title")
                 .content("This is a sample posting test")
                 .likes(0)
@@ -56,7 +55,7 @@ class PostsServiceTest {
                 .build();
 
         // when
-        Long postId = postsService.post(postsDto, savedMember.getEmail());
+        Long postId = postsService.post(postsDto, "자유게시판", savedMember.getEmail());
 
         // then
         assertEquals(postId, postsDto.getId());

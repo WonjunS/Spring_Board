@@ -22,6 +22,7 @@ public class CommentService {
     @Autowired private final PostsRepository postsRepository;
     @Autowired private final MemberRepository memberRepository;
 
+    // 댓글 작성
     @Transactional
     public Long save(Long postsId, String email, CommentRequestDto dto) {
         Member member = memberRepository.findByEmail(email);
@@ -38,6 +39,7 @@ public class CommentService {
         return comment.getId();
     }
 
+    // 해당 게시물에 작성된 모든 댓글 삭제
     @Transactional
     public void deleteAllCommentsByPostId(Long postId) {
         Posts post = postsRepository.findById(postId)
@@ -45,6 +47,7 @@ public class CommentService {
         commentRepository.deleteAllByPosts(post);
     }
 
+    // 탈퇴한 회원이 작성한 모든 댓글 삭제
     @Transactional
     public void deleteAllCommentsByMemberId(Long memberId) {
         Member member = memberRepository.findById(memberId)

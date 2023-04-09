@@ -69,7 +69,7 @@ public class PostsService {
         return posts;
     }
 
-    // 특정 회원이 작성한 게시물 불러오기
+    // 특정 회원이 작성한 게시물 불러오기 (Page)
     @Transactional(readOnly = true)
     public Page<PostsResponseDto> getAllPostsByWriter(String email, Pageable pageable) {
         int page = (pageable.getPageNumber() == 0) ? 0 : (pageable.getPageNumber() - 1);
@@ -83,6 +83,22 @@ public class PostsService {
         }
 
         return posts;
+    }
+
+    // 특정 회원이 작성한 게시물 불러오기 (ArrayList)
+    @Transactional(readOnly = true)
+    public List<PostsResponseDto> getAllPostsByWriter(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(EntityNotFoundException::new);
+        List<Posts> postsList = postsRepository.getAllByMemberAndOrderByIdDesc(member);
+        List<PostsResponseDto> postsDto = new ArrayList<>();
+
+        for(Posts p : postsList) {
+            PostsResponseDto dto = new PostsResponseDto(p);
+            postsDto.add(dto);
+        }
+
+        return postsDto;
     }
 
     // 검색한 게시물 불러오기
@@ -209,19 +225,9 @@ public class PostsService {
     // 게시물 삭제하기
     @Transactional
     public void deletePost(Long id) {
-        likesService.deleteAllByPosts(id);
-        commentService.deleteAllCommentsByPostId(id);
-        postsRepository.deleteById(id);
-    }
-
-    // 특정 회원이 작성한 모든 게시물 삭제
-    @Transactional
-    public void deleteAllPostsByMemberId(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(EntityNotFoundException::new);
-        likesService.deleteAllByMember(memberId);
-        commentService.deleteAllCommentsByMemberId(member.getId());
-        postsRepository.deleteAllByMember(member);
+        Posts post = postsRepository.findById(id)
+                        .orElseThrow(EntityNotFoundException::new);
+        postsRepository.delete(post);
     }
 
 }

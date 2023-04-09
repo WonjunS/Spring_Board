@@ -23,6 +23,8 @@
     <div class="card-body">
       <p class="card-text" th:text="'닉네임: ' + ${memberDto.nickname}"></p>
       <p class="card-text" th:text="'이메일: ' + ${memberDto.email}"></p>
+      <p class="card-text" th:text="'등급: ' + ${memberDto.grade}"></p>
+      <p class="card-text" th:text="'활동점수: ' + ${memberDto.score} + '점'"></p>
       <p class="card-text" th:text="'방문수: ' + ${memberDto.visits}"></p>
     </div>
     <ul class="list-group list-group-flush">

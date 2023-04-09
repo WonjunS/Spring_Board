@@ -1,6 +1,7 @@
 package com.example.boardservice.dto.response;
 
 import com.example.boardservice.domain.Member;
+import com.example.boardservice.domain.MemberGrade;
 import com.example.boardservice.domain.Role;
 import lombok.Getter;
 
@@ -15,7 +16,9 @@ public class MemberResponseDto implements Serializable {
     private final String nickname;
     private final String email;
     private final int visits;
+    private final int score;
     private final Role role;
+    private final MemberGrade grade;
     private final LocalDateTime modifiedAt;
 
     public MemberResponseDto(Member member) {
@@ -23,7 +26,9 @@ public class MemberResponseDto implements Serializable {
         this.nickname = member.getNickname();
         this.email = member.getEmail();
         this.visits = member.getVisits();
+        this.score = member.getActivityScore();
         this.role = member.getRole();
+        this.grade = member.getMemberGrade();
         this.modifiedAt = member.getModifiedAt();
     }
 

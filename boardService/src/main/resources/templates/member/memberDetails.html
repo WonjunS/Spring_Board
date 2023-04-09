@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/mainLayout}">
+
+<th:block layout:fragment="css">
+    <style>
+        a {
+            color: black;
+        }
+    </style>
+</th:block>
+
+<th:block layout:fragment="script">
+</th:block>
+
+<div layout:fragment="content">
+    <div class="card" style="width: 36rem; margin: 0 auto">
+        <div id="card-header" style="padding-left: 10px; padding-top: 10px;">
+            <h2>내 정보</h2>
+        </div>
+        <hr>
+        <div class="card-body">
+            <p class="card-text" th:text="'닉네임: ' + ${memberDto.nickname}"></p>
+            <p class="card-text" th:text="'등급: ' + ${memberDto.grade}"></p>
+            <p class="card-text" th:text="'활동점수: ' + ${memberDto.score} + '점'"></p>
+            <p class="card-text" th:text="'방문수: ' + ${memberDto.visits}"></p>
+        </div>
+    </div>
+
+    <br>
+    <br>
+
+    <table id="table" class="table table-horizontal">
+        <thead id="thead">
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+                <th>조회수</th>
+            </tr>
+        </thead>
+        <tbody id="tbody" th:each="post : ${postsDto}">
+            <tr>
+                <td th:text="${post.id}"></td>
+                <td><a th:text="${post.title}" th:href="@{/post/read/{id}(id = ${post.id})}"></a></td>
+                <td th:text="${post.writer}"></td>
+                <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${post.view}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</html>

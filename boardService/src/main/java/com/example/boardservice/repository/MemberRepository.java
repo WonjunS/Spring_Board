@@ -1,6 +1,7 @@
 package com.example.boardservice.repository;
 
 import com.example.boardservice.domain.Member;
+import com.example.boardservice.domain.MemberGrade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,6 +20,16 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying
     @Query("update Member m set m.visits = m.visits + 1 where m.id = :id")
     int updateVisits(Long id);
+
+    @Transactional
+    @Modifying
+    @Query("update Member m set m.memberGrade = :grade where m.id = :id")
+    int updateMemberGrade(Long id, MemberGrade grade);
+
+    @Transactional
+    @Modifying
+    @Query("update Member m set m.activityScore = m.activityScore + :score where m.id = :id")
+    int updateActivityScore(Long id, int score);
 
     Member findByEmail(String email);
     Member findByNickname(String nickname);

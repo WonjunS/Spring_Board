@@ -2,7 +2,9 @@ package com.example.boardservice.controller;
 
 import com.example.boardservice.dto.request.MemberRequestDto;
 import com.example.boardservice.dto.response.MemberResponseDto;
+import com.example.boardservice.dto.response.PostsResponseDto;
 import com.example.boardservice.service.MemberService;
+import com.example.boardservice.service.PostsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,8 +21,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
 
-    @Autowired
-    private MemberService memberService;
+    @Autowired private MemberService memberService;
+    @Autowired private PostsService postsService;
 
     @GetMapping("/signup")
     public String signupPage(MemberRequestDto memberDto, Model model) {
@@ -115,6 +117,18 @@ public class MemberController {
                          @RequestParam(value = "email") String email) {
         memberService.deleteMember(email, nickname);
         return "redirect:/";
+    }
+
+    @GetMapping("/{memberId}")
+    public String getMemberDetails(@PathVariable("memberId") Long memberId, Model model) {
+        MemberResponseDto memberDto = memberService.findMember(memberId);
+        if(memberDto != null) {
+            model.addAttribute("memberDto", memberDto);
+        }
+        List<PostsResponseDto> postsDto = postsService.getAllPostsByWriter(memberId);
+        model.addAttribute("postsDto", postsDto);
+
+        return "member/memberDetails";
     }
 
 }

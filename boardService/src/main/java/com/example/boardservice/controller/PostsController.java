@@ -16,14 +16,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.io.File;
 import java.security.Principal;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -55,37 +50,6 @@ public class PostsController {
         return "posts/postWrite";
     }
 
-    // 이미지 업로드
-    @PostMapping("/image/upload")
-    public ModelAndView image(MultipartHttpServletRequest request) throws Exception {
-        ModelAndView mav = new ModelAndView("jsonView");
-
-        MultipartFile uploadFile = request.getFile("upload");
-
-        // 파일의 기존 이름
-        String originalFileName = uploadFile.getOriginalFilename();
-
-        // 파일의 확장자
-        String ext = originalFileName.substring(originalFileName.indexOf("."));
-
-        String newFileName = UUID.randomUUID() + ext;
-
-        String realPath = request.getServletContext().getRealPath("/");
-
-        String savePath = realPath + "upload/" + newFileName;
-
-        String uploadPath = "./upload/" + newFileName;
-
-        File file = new File(savePath);
-
-        uploadFile.transferTo(file);
-
-        mav.addObject("uploaded", true);
-        mav.addObject("url", uploadPath);
-
-        return mav;
-    }
-
     // 작성된 게시물 저장
     @PostMapping("/post/write")
     public String insertData(@RequestParam("title") String title, @RequestParam("boardType") String boardType,
@@ -98,6 +62,8 @@ public class PostsController {
                 .content(content)
                 .build();
         postsService.post(postsDto, boardType, principal.getName());
+
+        memberService.updateActivityScore(principal.getName(), 10);
 
         return "redirect:/posts";
     }
@@ -128,13 +94,12 @@ public class PostsController {
         postsService.updateView(postId);
 
         Long memberId = memberService.findMember(principal.getName()).getId();
+        model.addAttribute("memberId", memberId);
 
-        System.out.println(postId + " " + memberId);
         int like = postsService.findLike(memberId, postId);
-        System.out.println("like = " + like);
         model.addAttribute("like", like);
 
-        return "posts/postDetail";
+        return "posts/postDetails";
     }
 
     // 좋아요수 업데이트
@@ -142,7 +107,7 @@ public class PostsController {
     @ResponseBody
     public int updateLikes(Long postId, Long memberId) {
         int status = postsService.updateLikes(memberId, postId);
-        System.out.println("Update: " + status);
+        System.out.println("----------");
         return status;
     }
 

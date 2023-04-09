@@ -5,11 +5,13 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum BoardType {
+public enum MemberGrade {
 
-    FREE("자유게시판"),
-    QUESTION("질문게시판"),
-    NOTICE("공지게시판");
+    BRONZE("브론즈"),
+    SILVER("실버"),
+    GOLD("골드"),
+    PLATINUM("플래티넘"),
+    DIAMOND("다이아");
 
     @Getter
     private final String value;

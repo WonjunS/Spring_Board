@@ -5,8 +5,8 @@
       layout:decorate="~{layouts/mainLayout}">
 
 <head>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}">
-    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" content="_csrf.headerName">
+    <meta name="_csrf" content="_csrf.token">
 </head>
 
 <th:block layout:fragment="css">
@@ -14,7 +14,6 @@
         a {
             color: black;
         }
-
         .ck.ck-editor__top {
             display: none;
         }
@@ -23,26 +22,19 @@
 
 <th:block layout:fragment="script">
     <script>
-        $(function() {
-            var likeUrl = "/img/like_fill.png";
-            var emptyUrl = "/img/like_empty.png";
-
+        $(document).ready(function() {
             let likeVal = $("#likeVal").val();
-            const likeImg = $("#likeImg");
 
             if(likeVal === 1 || likeVal === '1') {
-                $('#likeImg').attr("src", likeUrl);
+                $('#likeBtn').attr("class", "btn btn-danger");
             } else if(likeVal === 0 || likeVal === '0') {
-                $('#likeImg').attr("src", emptyUrl);
+                $('#likeBtn').attr("class", "btn btn-light");
             }
         });
     </script>
     <script>
-        var likeUrl = "/img/like_fill.png";
-        var emptyUrl = "/img/like_empty.png";
-
         $(function() {
-            $("#likeImg").click(function() {
+            $("#likeBtn").click(function() {
                 var header = $("meta[name='_csrf_header']").attr('content');
                 var token = $("meta[name='_csrf']").attr('content');
 
@@ -59,26 +51,12 @@
                             xhr.setRequestHeader(header, token);
                         }
                     }).done(function(){
-                        $("#likeImg").attr("src", emptyUrl);
+                        $("#likeBtn").attr("class", "btn btn-light");
                         location.reload();
                     }).fail(function (error) {
                         alert(JSON.stringify(error));
                     });
                 } else if(likeVal === 0 || likeVal === '0') {
-                    // $.ajax({
-                    //     type: "POST",
-                    //     url: "/post/like",
-                    //     data: {"postId" : postId, "memberId" : memberId},
-                    //     beforeSend: function(xhr) {
-                    //         xhr.setRequestHeader(header, token);
-                    //     },
-                    //     success: function (data) {
-                    //         $("#likeImg").attr("src", likeUrl);
-                    //     }, error: function () {
-                    //         // $("#likeImg").attr("src", "/assets/img/like_click.png");
-                    //         console.log('Error')
-                    //     }
-                    // });
                     $.ajax({
                         type: "POST",
                         url: "/post/like",
@@ -87,7 +65,7 @@
                             xhr.setRequestHeader(header, token);
                         }
                     }).done(function(){
-                        $("#likeImg").attr("src", likeUrl);
+                        $("#likeBtn").attr("class", "btn btn-danger");
                         location.reload();
                     }).fail(function (error) {
                         alert(JSON.stringify(error));
@@ -100,21 +78,20 @@
 
 <div layout:fragment="content">
     <div class="container" style="width: 100%">
-        <button id="likeBtn" class="btn">좋아요</button>
-
-        <div sec:authorize="isAuthenticated()" class="d-block">
-            <input type="hidden" id="likeVal" name="likeVal" th:value="${like}">
-            <img id="likeImg" src="/img/like_empty.png" alt="" width="30px" height="30px">
-        </div>
-
         <table border="1" style="width: 800px; margin: 0 auto;">
             <tr>
-                <th colspan="2">
+                <th>
                     <h4 th:text="${postsDto.title}"></h4>
+                </th>
+                <th>
+                    <div sec:authorize="isAuthenticated()" class="d-block">
+                        <input type="hidden" id="likeVal" name="likeVal" th:value="${like}">
+                        <button type="button" id="likeBtn" class="btn btn-light">좋아요</button>
+                    </div>
                 </th>
             </tr>
             <tr>
-                <td th:text="${postsDto.writer}"></td>
+                <td><a th:text="${postsDto.writer}" th:href="@{'/member/' + ${postsDto.memberId}}"></a></td>
                 <td th:text="${#temporals.format(postsDto.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
             </tr>
             <tr>
@@ -124,7 +101,7 @@
             </tr>
         </table>
 
-        <input type="hidden" id="memberId" name="memberId" th:value="${postsDto.memberId}">
+        <input type="hidden" id="memberId" name="memberId" th:value="${memberId}">
         <input type="hidden" id="postId" name="postId" th:value="${postsDto.id}">
 
         <script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
@@ -154,10 +131,10 @@
         </div>
         <div class="card" th:each="comment : ${comments}">
             <div class="card-header">
-                [[${comment.nickname}]]
+                <a th:text="${comment.nickname}" th:href="@{'/member/' + ${comment.memberId}}"></a>
             </div>
             <div class="card-body">
-                <p class="card-text">[[${comment.comment}]]</p>
+                <p class="card-text" th:text="${comment.comment}"></p>
             </div>
         </div>
     </div>

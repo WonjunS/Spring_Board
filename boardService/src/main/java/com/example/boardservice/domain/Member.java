@@ -27,14 +27,19 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private int visits;
 
+    @Column(nullable = false)
+    private int activityScore;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    public void modify(String nickname, String password) {
-        this.nickname = nickname;
-        this.password = password;
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MemberGrade memberGrade;
+
+    private String provider;
+    private String providerId;
 
     public Member updateModifiedDate() {
         this.onPreUpdate();

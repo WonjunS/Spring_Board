@@ -71,6 +71,9 @@
     </tbody>
   </table>
 
+  <br>
+  <br>
+
   <nav aria-label="Page navigation example" style="text-align: center;">
     <ul class="pagination justify-content-center" th:with="start=${T(java.lang.Math).floor(boardList.number / 10) * 10 + 1},
                     last=(${start + 9 < boardList.totalPages ? start + 9 : boardList.totalPages})">
