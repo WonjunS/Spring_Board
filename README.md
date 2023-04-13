@@ -1,7 +1,7 @@
 # BoardService
 
 ## 프로젝트 설명
-Java와 Spring Boot를 기반으로 제작한 프로젝트 입니다.  
+Java와 Spring Framework를 기반으로 제작한 프로젝트 입니다.  
 
 
 CRUD를 포함한 게시판의 기본적인 기능을 제공하는 서비스 입니다.  
