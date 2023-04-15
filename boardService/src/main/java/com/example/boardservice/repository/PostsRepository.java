@@ -50,6 +50,8 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
     @Query("select p from Posts p order by p.view desc")
     List<Posts> getAllAndOrderByView();
 
+    void delete(Posts post);
+
     void deleteById(Long id);
 
     void deleteAllByMember(Member member);

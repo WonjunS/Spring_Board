@@ -34,23 +34,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-//        http.formLogin()
-//                .loginPage("/member/login")
-//                .usernameParameter("email")
-//                .passwordParameter("password")
-//                .defaultSuccessUrl("/")
-//                .failureUrl("/member/login/fail")
-//                .and()
-//                .logout()
-//                .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
-//                .logoutSuccessUrl("/");
-//
-
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/member/**", "/posts/**").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .and()
+            .and()
                 .formLogin()
                 .loginPage("/member/login")
                 .usernameParameter("email")
@@ -58,11 +46,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/")
                 .failureUrl("/member/login/fail")
                 .permitAll()
-                .and()
+            .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
                 .logoutSuccessUrl("/")
-                .and()
+            .and()
                 .oauth2Login()
                 .loginPage("/member/login")
                 .userInfoEndpoint()

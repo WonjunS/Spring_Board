@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
@@ -23,6 +25,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Transactional
     @Modifying
+    @Query("update Member m set m.visits = m.visits + 1 where m.email = :email")
+    int updateVisits(String email);
+
+    @Transactional
+    @Modifying
     @Query("update Member m set m.memberGrade = :grade where m.id = :id")
     int updateMemberGrade(Long id, MemberGrade grade);
 
@@ -33,6 +40,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Member findByEmail(String email);
     Member findByNickname(String nickname);
+
+    Optional<Member> findByProviderAndProviderId(String provider, String providerId);
 
     boolean existsByNickname(String nickname);
 
