@@ -1,47 +1,50 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/mainLayout}">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+</head>
 
 <th:block layout:fragment="css">
     <style>
         a {
             color: black;
         }
+        .container {
+            padding-top: 100px;
+            margin: 0 auto;
+        }
         .error {
             color: #bd2130;
-        }
-        #login_form {
-            width: 50%;
-            margin: 0 auto;
         }
     </style>
 </th:block>
 
+
 <div layout:fragment="content">
-    <form role="form" method="post" action="/member/login" id="login_form">
+    <div class="container">
+    <form style="width: 30%; margin: 0 auto;" role="form" method="post" action="/member/login">
         <div class="form-group">
             <label th:for="email">Email</label>
             <input type="email" name="email" class="form-control">
+            <small id="emailHelp" class="form-text text-muted"><p th:if="${loginErrorMsg}" class="error" th:text="${loginErrorMsg}"></p></small>
         </div>
-        <br>
-        <br>
         <div class="form-group">
             <label th:for="password">Password</label>
             <input type="password" name="password" id="password" class="form-control">
         </div>
-        <br>
-        <p th:if="${loginErrorMsg}" class="error" th:text="${loginErrorMsg}"></p>
-        <button type="submit" class="btn btn-primary">로그인</button>
-        <button type="button" class="btn btn-primary" onClick="location.href='/member/signup'">회원가입</button>
+        <div class="form-group">
+            <button type="submit" class="form-control btn btn-dark">로그인</button>
+        </div>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+        <div class="form-group">
+            <a href="/oauth2/authorization/google" class="form-control btn btn-outline-primary">Google 로그인</a>
+        </div>
+        <div class="form-group">
+            <a href="/oauth2/authorization/naver" class="form-control btn btn-outline-success">Naver 로그인</a>
+        </div>
     </form>
-
-    <div class="media-options" style="width: 100%; background-color: lightblue;">
-        <a href="/oauth2/authorization/google" class="field google">
-            <img src="/img/google.png" alt="" class="google-img">
-            <span>Login with Google</span>
-        </a>
     </div>
 </div>
 </html>
