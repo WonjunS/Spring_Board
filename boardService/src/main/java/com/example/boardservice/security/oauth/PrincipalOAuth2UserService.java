@@ -5,7 +5,6 @@ import com.example.boardservice.domain.MemberGrade;
 import com.example.boardservice.domain.Role;
 import com.example.boardservice.repository.MemberRepository;
 import com.example.boardservice.security.auth.PrincipalDetails;
-import com.example.boardservice.security.oauth.provider.FaceBookUserInfo;
 import com.example.boardservice.security.oauth.provider.GoogleUserInfo;
 import com.example.boardservice.security.oauth.provider.NaverUserInfo;
 import com.example.boardservice.security.oauth.provider.OAuth2UserInfo;
@@ -49,12 +48,8 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo oAuth2UserInfo = null;
         if (userRequest.getClientRegistration().getRegistrationId().equals("google")) {
             oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
-        } else if (userRequest.getClientRegistration().getRegistrationId().equals("facebook")) {
-            oAuth2UserInfo = new FaceBookUserInfo(oAuth2User.getAttributes());
         } else if (userRequest.getClientRegistration().getRegistrationId().equals("naver")){
             oAuth2UserInfo = new NaverUserInfo((Map)oAuth2User.getAttributes().get("response"));
-        } else {
-            System.out.println("우리는 구글과 페이스북만 지원해요 ㅎㅎ");
         }
 
         Optional<Member> userOptional =
@@ -64,7 +59,6 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         if (userOptional.isPresent()) {
             member = userOptional.get();
             memberService.updateVisits(member.getEmail());
-            memberRepository.save(member);
         } else {
             member = Member.builder()
                     .nickname(oAuth2UserInfo.getProvider() + "_" + oAuth2UserInfo.getProviderId().substring(0, 6))
